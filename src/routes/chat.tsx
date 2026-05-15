@@ -146,11 +146,11 @@ function ChatPage() {
                 (p as unknown as { file: File }).file,
                 backendChatId,
               );
-              if (res[0]) {
+              if (res.length) {
                 remoteId = res[0].dataset_id;
                 tableDescription = (res[0].df_schema as { description?: string })
                   ?.description;
-                newRemoteIds.push(res[0].dataset_id);
+                newRemoteIds.push(...res.map((item) => item.dataset_id));
               }
             }
           } catch (err) {

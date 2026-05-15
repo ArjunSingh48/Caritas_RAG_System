@@ -23,41 +23,34 @@ TEST_USER = uuid.UUID("1d560601-97aa-4ada-8cea-c6c53405c73d")
 
 
 def _ensure_chat(db: Session, chat_id: uuid.UUID | None) -> uuid.UUID:
-    if chat_id is None:
-        chat = Chat(chat_id=uuid.uuid4(), user_id=TEST_USER, name="Chat")
-        db.add(chat)
-        db.commit()
-        db.refresh(chat)
-        return chat.chat_id
-
-    existing = db.query(Chat).filter(Chat.chat_id == chat_id).first()
+    target_chat_id = chat_id or uuid.uuid4()
+    existing = db.query(Chat).filter(Chat.chat_id == target_chat_id).first()
     if existing:
         return existing.chat_id
 
-    chat = Chat(chat_id=chat_id, user_id=TEST_USER, name="Chat")
+    chat = Chat(chat_id=target_chat_id, user_id=TEST_USER, name="Chat")
     db.add(chat)
     db.commit()
-    db.refresh(chat)
-    return chat.chat_id
+    return target_chat_id
 
 
-def _persist_dataset_with_chat_retry(db: Session, dataset: Dataset, chat_id: uuid.UUID) -> None:
-    try:
-        db.add(dataset)
-        db.commit()
-        return
-    except IntegrityError as exc:
-        db.rollback()
-        if "datasets_chat_id_fkey" not in str(exc.orig):
-            raise
-
+def _persist_dataset(db: Session, dataset: Dataset, chat_id: uuid.UUID) -> None:
     existing = db.query(Chat).filter(Chat.chat_id == chat_id).first()
     if not existing:
-        db.add(Chat(chat_id=chat_id, user_id=TEST_USER, name="Chat"))
-        db.commit()
+        raise IntegrityError(
+            statement="dataset insert precheck",
+            params={"chat_id": str(chat_id)},
+            orig=Exception(f"Missing chat before dataset insert: {chat_id}"),
+        )
 
-    db.add(dataset)
-    db.commit()
+    try:
+        with db.begin_nested():
+            db.add(dataset)
+            db.flush()
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise
 
 
 def _sheet_table_name(dataset_id: str, sheet_name: str) -> str:
@@ -144,7 +137,7 @@ async def upload_file(
                 chunk_schema=schema_text,
                 embedding=embedding,
             )
-            _persist_dataset_with_chat_retry(db, dataset, chat_id)
+            _persist_dataset(db, dataset, chat_id)
 
             # Generate and store embedding asynchronously without blocking the main thread
 

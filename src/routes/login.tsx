@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { BarChart3, ArrowLeft, LogIn, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { user, login, signup } = useAuth();
+  const { login, signup } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
@@ -34,9 +34,8 @@ function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
   const [signupSubmitting, setSignupSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (user) navigate({ to: destinationForRole(user) });
-  }, [user, navigate]);
+  // Intentionally no auto-redirect when a saved session exists.
+  // The user must explicitly submit the sign-in form.
 
   const handleLogin = (e: FormEvent) => {
     e.preventDefault();

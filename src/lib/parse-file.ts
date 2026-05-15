@@ -8,12 +8,23 @@ export interface ParsedColumn {
   type: ColumnType;
 }
 
-export interface ParsedFile {
+export interface ParsedSheet {
   name: string;
-  size: number;
   rows: number;
   columns: ParsedColumn[];
   data: Record<string, unknown>[];
+}
+
+export interface ParsedFile {
+  name: string;
+  size: number;
+  // Aggregate row count across all sheets (or single sheet for CSV).
+  rows: number;
+  // Convenience pointers to the first sheet (back-compat with existing UI).
+  columns: ParsedColumn[];
+  data: Record<string, unknown>[];
+  // All parsed sheets — for xlsx this contains every sheet, for csv exactly one.
+  sheets: ParsedSheet[];
   // Original File reference, used to upload raw bytes to backend.
   file?: File;
 }
@@ -53,8 +64,19 @@ function buildColumns(data: Record<string, unknown>[]): ParsedColumn[] {
   }));
 }
 
-async function parseCsv(file: File): Promise<Record<string, unknown>[]> {
-  return new Promise((resolve, reject) => {
+function buildSheet(name: string, data: Record<string, unknown>[]): ParsedSheet {
+  const total = data.length;
+  const truncated = data.slice(0, MAX_ROWS);
+  return {
+    name,
+    rows: total,
+    columns: buildColumns(truncated),
+    data: truncated,
+  };
+}
+
+async function parseCsv(file: File): Promise<ParsedSheet[]> {
+  const data = await new Promise<Record<string, unknown>[]>((resolve, reject) => {
     Papa.parse<Record<string, unknown>>(file, {
       header: true,
       skipEmptyLines: true,
@@ -63,33 +85,38 @@ async function parseCsv(file: File): Promise<Record<string, unknown>[]> {
       error: (err) => reject(err),
     });
   });
+  return [buildSheet(file.name.replace(/\.csv$/i, ""), data)];
 }
 
-async function parseXlsx(file: File): Promise<Record<string, unknown>[]> {
+async function parseXlsx(file: File): Promise<ParsedSheet[]> {
   const buf = await file.arrayBuffer();
   const wb = XLSX.read(buf, { type: "array" });
-  const sheet = wb.Sheets[wb.SheetNames[0]];
-  return XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: "" });
+  return wb.SheetNames.map((name) => {
+    const sheet = wb.Sheets[name];
+    const data = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: "" });
+    return buildSheet(name, data);
+  });
 }
 
 export async function parseFile(file: File): Promise<ParsedFile> {
   const lower = file.name.toLowerCase();
-  let data: Record<string, unknown>[];
+  let sheets: ParsedSheet[];
   if (lower.endsWith(".csv")) {
-    data = await parseCsv(file);
+    sheets = await parseCsv(file);
   } else if (lower.endsWith(".xlsx") || lower.endsWith(".xls")) {
-    data = await parseXlsx(file);
+    sheets = await parseXlsx(file);
   } else {
     throw new Error("Unsupported file type");
   }
-  const total = data.length;
-  const truncated = data.slice(0, MAX_ROWS);
+  const first = sheets[0] ?? { name: "Sheet1", rows: 0, columns: [], data: [] };
+  const totalRows = sheets.reduce((acc, s) => acc + s.rows, 0);
   return {
     name: file.name,
     size: file.size,
-    rows: total,
-    columns: buildColumns(truncated),
-    data: truncated,
+    rows: totalRows,
+    columns: first.columns,
+    data: first.data,
+    sheets,
     file,
   };
 }

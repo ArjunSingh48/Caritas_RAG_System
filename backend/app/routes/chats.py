@@ -1,4 +1,3 @@
-import json
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -8,8 +7,6 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.db.schema import Chat, Dataset
-import uuid
-from sqlalchemy.dialects.postgresql import UUID
 
 
 router = APIRouter()
