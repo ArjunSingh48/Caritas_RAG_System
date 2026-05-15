@@ -1,0 +1,22 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pandas
+openpyxl
+sqlalchemy
+python-dotenv
+httpx
+pydantic
+pydantic-settings
+httpx
+
+# For embedding store and generation
+sentence-transformers>=3.0.1
+pgvector
+psycopg2-binary
+
+# For evaluation
+duckdb
+
+# For SQL hallucination validation
+sqlglot

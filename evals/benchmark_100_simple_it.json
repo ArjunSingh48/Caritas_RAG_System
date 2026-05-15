@@ -1,0 +1,1661 @@
+[
+  {
+    "id": "q001",
+    "category": "lookup",
+    "question": "Qual è il nome del progetto P001?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT project_name FROM projects WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "project_name": "Displacement Response Iraq"
+      }
+    ],
+    "expected_answer": "The project name is 'Displacement Response Iraq'."
+  },
+  {
+    "id": "q002",
+    "category": "lookup",
+    "question": "In quale paese si trova il progetto P001?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT country FROM projects WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "country": "Iraq"
+      }
+    ],
+    "expected_answer": "Project P001 is in Iraq."
+  },
+  {
+    "id": "q003",
+    "category": "lookup",
+    "question": "A quale regione appartiene il progetto P001?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT region FROM projects WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "region": "Middle East & North Africa"
+      }
+    ],
+    "expected_answer": "Project P001 is in the Middle East & North Africa region."
+  },
+  {
+    "id": "q004",
+    "category": "lookup",
+    "question": "Qual è il tema del progetto P001?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT theme FROM projects WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "theme": "Humanitarian Aid"
+      }
+    ],
+    "expected_answer": "The theme of P001 is Humanitarian Aid."
+  },
+  {
+    "id": "q005",
+    "category": "lookup",
+    "question": "Chi è il capofila del progetto P001?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT lead_partner FROM projects WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "lead_partner": "UN Agency"
+      }
+    ],
+    "expected_answer": "The lead partner is UN Agency."
+  },
+  {
+    "id": "q006",
+    "category": "lookup",
+    "question": "Qual è il tipo di finanziamento del progetto P001?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT funding_type FROM projects WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "funding_type": "Service Contract"
+      }
+    ],
+    "expected_answer": "The funding type of P001 is Service Contract."
+  },
+  {
+    "id": "q007",
+    "category": "lookup",
+    "question": "Qual è lo stato del progetto P001?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT project_status FROM projects WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "project_status": "Completed"
+      }
+    ],
+    "expected_answer": "The status of P001 is Completed."
+  },
+  {
+    "id": "q008",
+    "category": "lookup",
+    "question": "Il progetto P001 è attualmente attivo?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT is_active FROM projects WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "is_active": 0
+      }
+    ],
+    "expected_answer": "No."
+  },
+  {
+    "id": "q009",
+    "category": "lookup",
+    "question": "Quando è iniziato il progetto P001?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT start_date FROM projects WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "start_date": "2020-07-01 00:00:00"
+      }
+    ],
+    "expected_answer": "Project P001 started on 2020-07-01."
+  },
+  {
+    "id": "q010",
+    "category": "lookup",
+    "question": "Quando termina il progetto P001?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT end_date FROM projects WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "end_date": "2022-12-31 00:00:00"
+      }
+    ],
+    "expected_answer": "Project P001 ends on 2022-12-31."
+  },
+  {
+    "id": "q011",
+    "category": "lookup",
+    "question": "A quanti beneficiari si rivolge il progetto P001?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT beneficiaries_target FROM projects WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "beneficiaries_target": 15447
+      }
+    ],
+    "expected_answer": "Project P001 targets 15,447 beneficiaries."
+  },
+  {
+    "id": "q012",
+    "category": "lookup",
+    "question": "Qual è il nome del centro di costo per il progetto P001?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT cost_centre_name FROM projects WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "cost_centre_name": "Iraq"
+      }
+    ],
+    "expected_answer": "The cost centre is Iraq."
+  },
+  {
+    "id": "q013",
+    "category": "lookup",
+    "question": "In quale paese si trova il progetto P002?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT country FROM projects WHERE project_id = 'P002';",
+    "expected_rows": [
+      {
+        "country": "Uganda"
+      }
+    ],
+    "expected_answer": "Project P002 is in Uganda."
+  },
+  {
+    "id": "q014",
+    "category": "lookup",
+    "question": "A quale regione appartiene il progetto P002?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT region FROM projects WHERE project_id = 'P002';",
+    "expected_rows": [
+      {
+        "region": "East Africa"
+      }
+    ],
+    "expected_answer": "Project P002 is in the East Africa region."
+  },
+  {
+    "id": "q015",
+    "category": "lookup",
+    "question": "Qual è il nome del progetto P002?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT project_name FROM projects WHERE project_id = 'P002';",
+    "expected_rows": [
+      {
+        "project_name": "Land & Rights Uganda"
+      }
+    ],
+    "expected_answer": "The project name is 'Land & Rights Uganda'."
+  },
+  {
+    "id": "q016",
+    "category": "lookup",
+    "question": "Qual è il tema del progetto P003?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT theme FROM projects WHERE project_id = 'P003';",
+    "expected_rows": [
+      {
+        "theme": "Humanitarian Aid"
+      }
+    ],
+    "expected_answer": "The theme of P003 is Humanitarian Aid."
+  },
+  {
+    "id": "q017",
+    "category": "lookup",
+    "question": "In quale paese si trova il progetto P003?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT country FROM projects WHERE project_id = 'P003';",
+    "expected_rows": [
+      {
+        "country": "Yemen"
+      }
+    ],
+    "expected_answer": "Project P003 is in Yemen."
+  },
+  {
+    "id": "q018",
+    "category": "lookup",
+    "question": "Chi è il capofila del progetto P004?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT lead_partner FROM projects WHERE project_id = 'P004';",
+    "expected_rows": [
+      {
+        "lead_partner": "Local NGO"
+      }
+    ],
+    "expected_answer": "The lead partner of P004 is Local NGO."
+  },
+  {
+    "id": "q019",
+    "category": "lookup",
+    "question": "A quanti beneficiari si rivolge il progetto P004?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT beneficiaries_target FROM projects WHERE project_id = 'P004';",
+    "expected_rows": [
+      {
+        "beneficiaries_target": 15855
+      }
+    ],
+    "expected_answer": "Project P004 targets 15,855 beneficiaries."
+  },
+  {
+    "id": "q020",
+    "category": "lookup",
+    "question": "Qual è il tipo di finanziamento del progetto P005?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT funding_type FROM projects WHERE project_id = 'P005';",
+    "expected_rows": [
+      {
+        "funding_type": "Institutional Grant"
+      }
+    ],
+    "expected_answer": "The funding type of P005 is Institutional Grant."
+  },
+  {
+    "id": "q021",
+    "category": "lookup",
+    "question": "A quale regione appartiene il progetto P005?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT region FROM projects WHERE project_id = 'P005';",
+    "expected_rows": [
+      {
+        "region": "Eastern Europe"
+      }
+    ],
+    "expected_answer": "Project P005 is in the Eastern Europe region."
+  },
+  {
+    "id": "q022",
+    "category": "lookup",
+    "question": "Chi è il donatore della sovvenzione PQ-2022-0001?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT donor_name FROM grant_applications WHERE grant_id = 'PQ-2022-0001';",
+    "expected_rows": [
+      {
+        "donor_name": "SECO"
+      }
+    ],
+    "expected_answer": "The donor is SECO."
+  },
+  {
+    "id": "q023",
+    "category": "lookup",
+    "question": "Qual è lo stato della sovvenzione PQ-2022-0001?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT grant_status FROM grant_applications WHERE grant_id = 'PQ-2022-0001';",
+    "expected_rows": [
+      {
+        "grant_status": "cancelled"
+      }
+    ],
+    "expected_answer": "The grant status is cancelled."
+  },
+  {
+    "id": "q024",
+    "category": "lookup",
+    "question": "A quale progetto appartiene la sovvenzione PQ-2022-0001?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT project_id FROM grant_applications WHERE grant_id = 'PQ-2022-0001';",
+    "expected_rows": [
+      {
+        "project_id": "P001"
+      }
+    ],
+    "expected_answer": "It belongs to project P001."
+  },
+  {
+    "id": "q025",
+    "category": "lookup",
+    "question": "Qual è la probabilità di successo della sovvenzione PQ-2022-0001?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT success_chance FROM grant_applications WHERE grant_id = 'PQ-2022-0001';",
+    "expected_rows": [
+      {
+        "success_chance": "Low"
+      }
+    ],
+    "expected_answer": "The success-chance rating is Low."
+  },
+  {
+    "id": "q026",
+    "category": "lookup",
+    "question": "Qual era l'importo richiesto nella sovvenzione PQ-2022-0001?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT amount_requested_chf FROM grant_applications WHERE grant_id = 'PQ-2022-0001';",
+    "expected_rows": [
+      {
+        "amount_requested_chf": 916000
+      }
+    ],
+    "expected_answer": "The amount requested was 916,000 CHF."
+  },
+  {
+    "id": "q027",
+    "category": "lookup",
+    "question": "Qual è il tipo di sovvenzione del donatore PQ-2022-0001?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT donor_type FROM grant_applications WHERE grant_id = 'PQ-2022-0001';",
+    "expected_rows": [
+      {
+        "donor_type": "Government"
+      }
+    ],
+    "expected_answer": "The donor type is Government."
+  },
+  {
+    "id": "q028",
+    "category": "lookup",
+    "question": "Qual è il paese donatore della sovvenzione PQ-2022-0001?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT donor_country FROM grant_applications WHERE grant_id = 'PQ-2022-0001';",
+    "expected_rows": [
+      {
+        "donor_country": "CH"
+      }
+    ],
+    "expected_answer": "The donor country is CH."
+  },
+  {
+    "id": "q029",
+    "category": "lookup",
+    "question": "La sovvenzione PQ-2022-0001 è una domanda pluriennale?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT is_multi_year FROM grant_applications WHERE grant_id = 'PQ-2022-0001';",
+    "expected_rows": [
+      {
+        "is_multi_year": 0
+      }
+    ],
+    "expected_answer": "No."
+  },
+  {
+    "id": "q030",
+    "category": "lookup",
+    "question": "Qual è l'importo approvato per la sovvenzione PQ-2024-0002?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT amount_approved_chf FROM grant_applications WHERE grant_id = 'PQ-2024-0002';",
+    "expected_rows": [
+      {
+        "amount_approved_chf": 227000.0
+      }
+    ],
+    "expected_answer": "The amount approved was 227,000 CHF."
+  },
+  {
+    "id": "q031",
+    "category": "count",
+    "question": "Quanti progetti ci sono in totale?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects;",
+    "expected_rows": [
+      {
+        "count_star()": 296
+      }
+    ],
+    "expected_answer": "There are 296 projects in total."
+  },
+  {
+    "id": "q032",
+    "category": "count",
+    "question": "Quanti progetti sono attualmente attivi?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE is_active = 1;",
+    "expected_rows": [
+      {
+        "count_star()": 168
+      }
+    ],
+    "expected_answer": "There are 168 active projects."
+  },
+  {
+    "id": "q033",
+    "category": "count",
+    "question": "Quanti progetti ci sono nello Yemen?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE country = 'Yemen';",
+    "expected_rows": [
+      {
+        "count_star()": 5
+      }
+    ],
+    "expected_answer": "There are 5 projects in Yemen."
+  },
+  {
+    "id": "q034",
+    "category": "count",
+    "question": "Quanti progetti ci sono in Iraq?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE country = 'Iraq';",
+    "expected_rows": [
+      {
+        "count_star()": 4
+      }
+    ],
+    "expected_answer": "There are 4 projects in Iraq."
+  },
+  {
+    "id": "q035",
+    "category": "count",
+    "question": "Quanti progetti ci sono in Burundi?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE country = 'Burundi';",
+    "expected_rows": [
+      {
+        "count_star()": 4
+      }
+    ],
+    "expected_answer": "There are 4 projects in Burundi."
+  },
+  {
+    "id": "q036",
+    "category": "count",
+    "question": "Quanti progetti ci sono in Kosovo?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE country = 'Kosovo';",
+    "expected_rows": [
+      {
+        "count_star()": 5
+      }
+    ],
+    "expected_answer": "There are 5 projects in Kosovo."
+  },
+  {
+    "id": "q037",
+    "category": "count",
+    "question": "Quanti progetti ci sono in Uganda?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE country = 'Uganda';",
+    "expected_rows": [
+      {
+        "count_star()": 6
+      }
+    ],
+    "expected_answer": "There are 6 projects in Uganda."
+  },
+  {
+    "id": "q038",
+    "category": "count",
+    "question": "Quanti progetti attivi ci sono nella regione dell’Africa orientale?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE region = 'East Africa' AND is_active = 1;",
+    "expected_rows": [
+      {
+        "count_star()": 23
+      }
+    ],
+    "expected_answer": "There are 23 active projects in East Africa."
+  },
+  {
+    "id": "q039",
+    "category": "count",
+    "question": "Quanti progetti attivi ci sono nella regione del Sahel?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE region = 'Sahel' AND is_active = 1;",
+    "expected_rows": [
+      {
+        "count_star()": 28
+      }
+    ],
+    "expected_answer": "There are 28 active projects in the Sahel."
+  },
+  {
+    "id": "q040",
+    "category": "count",
+    "question": "Quanti sono i progetti attivi sul tema del clima?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE theme = 'Climate' AND is_active = 1;",
+    "expected_rows": [
+      {
+        "count_star()": 19
+      }
+    ],
+    "expected_answer": "There are 19 active Climate-theme projects."
+  },
+  {
+    "id": "q041",
+    "category": "count",
+    "question": "Quanti sono i progetti attivi sul tema Migrazione?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE theme = 'Migration' AND is_active = 1;",
+    "expected_rows": [
+      {
+        "count_star()": 16
+      }
+    ],
+    "expected_answer": "There are 16 active Migration-theme projects."
+  },
+  {
+    "id": "q042",
+    "category": "count",
+    "question": "Quanti progetti hanno lo status 'Idea'?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE project_status = 'Idea';",
+    "expected_rows": [
+      {
+        "count_star()": 15
+      }
+    ],
+    "expected_answer": "There are 15 projects in 'Idea' status."
+  },
+  {
+    "id": "q043",
+    "category": "count",
+    "question": "Quanti progetti sono \"Annullati\"?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE project_status = 'Cancelled';",
+    "expected_rows": [
+      {
+        "count_star()": 27
+      }
+    ],
+    "expected_answer": "There are 27 Cancelled projects."
+  },
+  {
+    "id": "q044",
+    "category": "count",
+    "question": "Quanti progetti sono \"chiusi\"?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE project_status = 'Closed';",
+    "expected_rows": [
+      {
+        "count_star()": 35
+      }
+    ],
+    "expected_answer": "There are 35 Closed projects."
+  },
+  {
+    "id": "q045",
+    "category": "count",
+    "question": "Quanti progetti sono guidati da un Istituto di ricerca?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE lead_partner = 'Research Institute';",
+    "expected_rows": [
+      {
+        "count_star()": 53
+      }
+    ],
+    "expected_answer": "There are 53 projects led by Research Institute."
+  },
+  {
+    "id": "q046",
+    "category": "count",
+    "question": "Quanti progetti sono guidati da Caritas Svizzera?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM projects WHERE lead_partner = 'Caritas Switzerland';",
+    "expected_rows": [
+      {
+        "count_star()": 48
+      }
+    ],
+    "expected_answer": "There are 48 projects led by Caritas Switzerland."
+  },
+  {
+    "id": "q047",
+    "category": "count",
+    "question": "Quanti paesi distinti hanno progetti?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT COUNT(DISTINCT country)  FROM projects;",
+    "expected_rows": [
+      {
+        "count(DISTINCT country)": 61
+      }
+    ],
+    "expected_answer": "There are 61 distinct countries."
+  },
+  {
+    "id": "q048",
+    "category": "count",
+    "question": "Quanti centri di costo distinti esistono?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT COUNT(DISTINCT cost_centre_code)  FROM projects;",
+    "expected_rows": [
+      {
+        "count(DISTINCT cost_centre_code)": 61
+      }
+    ],
+    "expected_answer": "There are 61 distinct cost centres."
+  },
+  {
+    "id": "q049",
+    "category": "count",
+    "question": "Quante sono le domande di sussidio in totale?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM grant_applications;",
+    "expected_rows": [
+      {
+        "count_star()": 752
+      }
+    ],
+    "expected_answer": "There are 752 grant applications in total."
+  },
+  {
+    "id": "q050",
+    "category": "count",
+    "question": "Quante domande di sovvenzione sono legate al progetto P001?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM grant_applications WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "count_star()": 4
+      }
+    ],
+    "expected_answer": "There are 4 grant applications for P001."
+  },
+  {
+    "id": "q051",
+    "category": "count",
+    "question": "Quante richieste di sussidio provengono dalla SECO?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM grant_applications WHERE donor_name = 'SECO';",
+    "expected_rows": [
+      {
+        "count_star()": 15
+      }
+    ],
+    "expected_answer": "There are 15 applications from SECO."
+  },
+  {
+    "id": "q052",
+    "category": "count",
+    "question": "Quante richieste di sovvenzione provengono dall'OCHA?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM grant_applications WHERE donor_name = 'OCHA';",
+    "expected_rows": [
+      {
+        "count_star()": 15
+      }
+    ],
+    "expected_answer": "There are 15 applications from OCHA."
+  },
+  {
+    "id": "q053",
+    "category": "count",
+    "question": "Quante richieste di sussidio provengono da Oxfam?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM grant_applications WHERE donor_name = 'Oxfam';",
+    "expected_rows": [
+      {
+        "count_star()": 10
+      }
+    ],
+    "expected_answer": "There are 10 applications from Oxfam."
+  },
+  {
+    "id": "q054",
+    "category": "count",
+    "question": "Quante richieste di sussidio hanno avuto successo?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM grant_applications WHERE grant_status = 'successful';",
+    "expected_rows": [
+      {
+        "count_star()": 432
+      }
+    ],
+    "expected_answer": "There are 432 successful grant applications."
+  },
+  {
+    "id": "q055",
+    "category": "count",
+    "question": "Quante richieste di sussidio non vengono accolte?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM grant_applications WHERE grant_status = 'unsuccessful';",
+    "expected_rows": [
+      {
+        "count_star()": 81
+      }
+    ],
+    "expected_answer": "There are 81 unsuccessful grant applications."
+  },
+  {
+    "id": "q056",
+    "category": "count",
+    "question": "Quante richieste di sussidio sono attualmente in corso?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM grant_applications WHERE grant_status = 'in_progress';",
+    "expected_rows": [
+      {
+        "count_star()": 194
+      }
+    ],
+    "expected_answer": "There are 194 grant applications in progress."
+  },
+  {
+    "id": "q057",
+    "category": "count",
+    "question": "Quanti sussidi di successo provengono dalla SECO?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM grant_applications WHERE donor_name = 'SECO' AND grant_status = 'successful';",
+    "expected_rows": [
+      {
+        "count_star()": 9
+      }
+    ],
+    "expected_answer": "There are 9 successful grants from SECO."
+  },
+  {
+    "id": "q058",
+    "category": "count",
+    "question": "Quante sovvenzioni provengono da donatori governativi?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM grant_applications WHERE donor_type = 'Government';",
+    "expected_rows": [
+      {
+        "count_star()": 204
+      }
+    ],
+    "expected_answer": "There are 204 grants from Government donors."
+  },
+  {
+    "id": "q059",
+    "category": "count",
+    "question": "Quante sovvenzioni provengono da donatori multilaterali?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM grant_applications WHERE donor_type = 'Multilateral';",
+    "expected_rows": [
+      {
+        "count_star()": 191
+      }
+    ],
+    "expected_answer": "There are 191 grants from Multilateral donors."
+  },
+  {
+    "id": "q060",
+    "category": "count",
+    "question": "Quante sovvenzioni provengono da donatori con sede in Svizzera (CH)?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT  COUNT(*) FROM grant_applications WHERE donor_country = 'CH';",
+    "expected_rows": [
+      {
+        "count_star()": 105
+      }
+    ],
+    "expected_answer": "There are 105 grants from Swiss donors."
+  },
+  {
+    "id": "q061",
+    "category": "sum",
+    "question": "Quali sono i costi totali del progetto per il progetto P001?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE project_id = 'P001' AND budget_line = 'Total project costs';",
+    "expected_rows": [
+      {
+        "total": 5405000
+      }
+    ],
+    "expected_answer": "Total project costs for P001: 5,405,000 CHF."
+  },
+  {
+    "id": "q062",
+    "category": "sum",
+    "question": "Qual è il reddito totale per il progetto P001?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE project_id = 'P001' AND budget_line = 'Total income';",
+    "expected_rows": [
+      {
+        "total": 3271000
+      }
+    ],
+    "expected_answer": "Total income for P001: 3,271,000 CHF."
+  },
+  {
+    "id": "q063",
+    "category": "sum",
+    "question": "Quali sono i costi indiretti per il progetto P001?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE project_id = 'P001' AND budget_line = 'Indirect Costs';",
+    "expected_rows": [
+      {
+        "total": 647000
+      }
+    ],
+    "expected_answer": "Indirect Costs for P001: 647,000 CHF."
+  },
+  {
+    "id": "q064",
+    "category": "sum",
+    "question": "Qual è il totale del cofinanziamento per il progetto P001?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE project_id = 'P001' AND budget_line = 'Co-financing';",
+    "expected_rows": [
+      {
+        "total": 557000
+      }
+    ],
+    "expected_answer": "Co-financing for P001: 557,000 CHF."
+  },
+  {
+    "id": "q065",
+    "category": "sum",
+    "question": "Quali sono i costi totali del progetto P002?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE project_id = 'P002' AND budget_line = 'Total project costs';",
+    "expected_rows": [
+      {
+        "total": null
+      }
+    ],
+    "expected_answer": "Total project costs for P002: 0 CHF."
+  },
+  {
+    "id": "q066",
+    "category": "sum",
+    "question": "Qual è il reddito totale per il progetto P002?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE project_id = 'P002' AND budget_line = 'Total income';",
+    "expected_rows": [
+      {
+        "total": null
+      }
+    ],
+    "expected_answer": "Total income for P002: 0 CHF."
+  },
+  {
+    "id": "q067",
+    "category": "sum",
+    "question": "Quali sono i costi totali del progetto per il progetto P003?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE project_id = 'P003' AND budget_line = 'Total project costs';",
+    "expected_rows": [
+      {
+        "total": 6272000
+      }
+    ],
+    "expected_answer": "Total project costs for P003: 6,272,000 CHF."
+  },
+  {
+    "id": "q068",
+    "category": "sum",
+    "question": "Quali sono i costi totali del personale in tutti gli anni?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE sub_category = 'Staff Costs';",
+    "expected_rows": [
+      {
+        "total": 384688000
+      }
+    ],
+    "expected_answer": "Total Staff Costs (all years): 384,688,000 CHF."
+  },
+  {
+    "id": "q069",
+    "category": "sum",
+    "question": "Quali sono i costi totali dei partner in tutti gli anni?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE sub_category = 'Partner Costs';",
+    "expected_rows": [
+      {
+        "total": 265386000
+      }
+    ],
+    "expected_answer": "Total Partner Costs (all years): 265,386,000 CHF."
+  },
+  {
+    "id": "q070",
+    "category": "sum",
+    "question": "Quali sono i costi operativi totali in tutti gli anni?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE sub_category = 'Operational Costs';",
+    "expected_rows": [
+      {
+        "total": 291275000
+      }
+    ],
+    "expected_answer": "Total Operational Costs (all years): 291,275,000 CHF."
+  },
+  {
+    "id": "q071",
+    "category": "sum",
+    "question": "Quali sono i costi totali per attrezzature e forniture in tutti gli anni?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE sub_category = 'Equipment & Supplies';",
+    "expected_rows": [
+      {
+        "total": 120483000
+      }
+    ],
+    "expected_answer": "Total Equipment & Supplies costs: 120,483,000 CHF."
+  },
+  {
+    "id": "q072",
+    "category": "sum",
+    "question": "Quali sono i costi totali del personale nell’anno fiscale 2022?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE sub_category = 'Staff Costs' AND fiscal_year = 2022;",
+    "expected_rows": [
+      {
+        "total": 79578000
+      }
+    ],
+    "expected_answer": "Total Staff Costs in 2022: 79,578,000 CHF."
+  },
+  {
+    "id": "q073",
+    "category": "sum",
+    "question": "Quali sono i costi totali del personale nell’anno fiscale 2023?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE sub_category = 'Staff Costs' AND fiscal_year = 2023;",
+    "expected_rows": [
+      {
+        "total": 76530000
+      }
+    ],
+    "expected_answer": "Total Staff Costs in 2023: 76,530,000 CHF."
+  },
+  {
+    "id": "q074",
+    "category": "sum",
+    "question": "Quali sono i costi totali dei partner nell'anno fiscale 2023?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE sub_category = 'Partner Costs' AND fiscal_year = 2023;",
+    "expected_rows": [
+      {
+        "total": 52653000
+      }
+    ],
+    "expected_answer": "Total Partner Costs in 2023: 52,653,000 CHF."
+  },
+  {
+    "id": "q075",
+    "category": "sum",
+    "question": "Quali sono i costi totali del progetto nell’anno fiscale 2023?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE budget_line = 'Total project costs' AND fiscal_year = 2023;",
+    "expected_rows": [
+      {
+        "total": 251162000
+      }
+    ],
+    "expected_answer": "Total project costs in 2023: 251,162,000 CHF."
+  },
+  {
+    "id": "q076",
+    "category": "sum",
+    "question": "Qual è il reddito totale nell’anno fiscale 2023?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE budget_line = 'Total income' AND fiscal_year = 2023;",
+    "expected_rows": [
+      {
+        "total": 185555000
+      }
+    ],
+    "expected_answer": "Total income in 2023: 185,555,000 CHF."
+  },
+  {
+    "id": "q077",
+    "category": "sum",
+    "question": "Quali sono i costi totali del progetto nell’anno fiscale 2024?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(amount_chf) AS total FROM budget_actuals WHERE budget_line = 'Total project costs' AND fiscal_year = 2024;",
+    "expected_rows": [
+      {
+        "total": 194682000
+      }
+    ],
+    "expected_answer": "Total project costs in 2024: 194,682,000 CHF."
+  },
+  {
+    "id": "q078",
+    "category": "sum",
+    "question": "Qual è l'importo totale approvato tra le sovvenzioni per il progetto P001?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT SUM(amount_approved_chf) AS total FROM grant_applications WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "total": 762000.0
+      }
+    ],
+    "expected_answer": "Total approved for P001 grants: 762,000 CHF."
+  },
+  {
+    "id": "q079",
+    "category": "sum",
+    "question": "Qual è l'importo totale richiesto per tutte le domande di sovvenzione?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT SUM(amount_requested_chf) AS total FROM grant_applications;",
+    "expected_rows": [
+      {
+        "total": 407585000
+      }
+    ],
+    "expected_answer": "Total amount requested (all applications): 407,585,000 CHF."
+  },
+  {
+    "id": "q080",
+    "category": "sum",
+    "question": "Qual è l'importo totale approvato dalla SECO?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT SUM(amount_approved_chf) AS total FROM grant_applications WHERE donor_name = 'SECO';",
+    "expected_rows": [
+      {
+        "total": 3967000.0
+      }
+    ],
+    "expected_answer": "Total approved from SECO: 3,967,000 CHF."
+  },
+  {
+    "id": "q081",
+    "category": "sum",
+    "question": "Qual è l'importo totale approvato dall'OCHA?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT SUM(amount_approved_chf) AS total FROM grant_applications WHERE donor_name = 'OCHA';",
+    "expected_rows": [
+      {
+        "total": 3466000.0
+      }
+    ],
+    "expected_answer": "Total approved from OCHA: 3,466,000 CHF."
+  },
+  {
+    "id": "q082",
+    "category": "sum",
+    "question": "Qual è l’importo totale approvato dai donatori governativi?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT SUM(amount_approved_chf) AS total FROM grant_applications WHERE donor_type = 'Government';",
+    "expected_rows": [
+      {
+        "total": 51573000.0
+      }
+    ],
+    "expected_answer": "Total approved from Government donors: 51,573,000 CHF."
+  },
+  {
+    "id": "q083",
+    "category": "sum",
+    "question": "Qual è l'obiettivo totale dei beneficiari dei progetti in Iraq?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT SUM(beneficiaries_target) AS total FROM projects WHERE country = 'Iraq';",
+    "expected_rows": [
+      {
+        "total": 83039
+      }
+    ],
+    "expected_answer": "Total beneficiaries (Iraq): 83,039 people."
+  },
+  {
+    "id": "q084",
+    "category": "sum",
+    "question": "Qual è l'obiettivo totale dei beneficiari dei progetti nello Yemen?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT SUM(beneficiaries_target) AS total FROM projects WHERE country = 'Yemen';",
+    "expected_rows": [
+      {
+        "total": 86257
+      }
+    ],
+    "expected_answer": "Total beneficiaries (Yemen): 86,257 people."
+  },
+  {
+    "id": "q085",
+    "category": "sum",
+    "question": "Qual è l’obiettivo totale dei beneficiari per i progetti attivi sul tema del clima?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT SUM(beneficiaries_target) AS total FROM projects WHERE theme = 'Climate' AND is_active = 1;",
+    "expected_rows": [
+      {
+        "total": 223859
+      }
+    ],
+    "expected_answer": "Active Climate-theme target: 223,859 people."
+  },
+  {
+    "id": "q086",
+    "category": "agg",
+    "question": "Qual è l'importo massimo richiesto in qualsiasi richiesta di sovvenzione?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT MAX(amount_requested_chf) AS v FROM grant_applications;",
+    "expected_rows": [
+      {
+        "v": 1498000
+      }
+    ],
+    "expected_answer": "Maximum amount requested: 1,498,000 CHF."
+  },
+  {
+    "id": "q087",
+    "category": "agg",
+    "question": "Qual è l'importo minimo richiesto in qualsiasi richiesta di sovvenzione?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT MIN(amount_requested_chf) AS v FROM grant_applications;",
+    "expected_rows": [
+      {
+        "v": 80000
+      }
+    ],
+    "expected_answer": "Minimum amount requested: 80,000 CHF."
+  },
+  {
+    "id": "q088",
+    "category": "agg",
+    "question": "Qual è l'importo medio approvato per le sovvenzioni accettate?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT AVG(amount_approved_chf) AS v FROM grant_applications WHERE grant_status = 'successful';",
+    "expected_rows": [
+      {
+        "v": 469030.0925925926
+      }
+    ],
+    "expected_answer": "Average amount approved (successful): 469,030 CHF."
+  },
+  {
+    "id": "q089",
+    "category": "agg",
+    "question": "Qual è l'obiettivo massimo dei beneficiari per tutti i progetti?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT MAX(beneficiaries_target) AS v FROM projects;",
+    "expected_rows": [
+      {
+        "v": 39863
+      }
+    ],
+    "expected_answer": "Maximum beneficiaries target: 39863 people."
+  },
+  {
+    "id": "q090",
+    "category": "agg",
+    "question": "Qual è l'obiettivo medio dei beneficiari in tutti i progetti?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT ROUND(AVG(beneficiaries_target), 0) AS v FROM projects;",
+    "expected_rows": [
+      {
+        "v": 12831.0
+      }
+    ],
+    "expected_answer": "Average beneficiaries target: 12831.0 people."
+  },
+  {
+    "id": "q091",
+    "category": "listing",
+    "question": "Elenca tutti i progetti nello Yemen.",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT project_id, project_name FROM projects WHERE country = 'Yemen';",
+    "expected_rows": [
+      {
+        "project_id": "P003",
+        "project_name": "Emergency WASH Yemen"
+      },
+      {
+        "project_id": "P024",
+        "project_name": "Child Nutrition Yemen"
+      },
+      {
+        "project_id": "P219",
+        "project_name": "Emergency Health Yemen"
+      },
+      {
+        "project_id": "P238",
+        "project_name": "Food Security Yemen"
+      },
+      {
+        "project_id": "P273",
+        "project_name": "Humanitarian Cash Yemen"
+      }
+    ],
+    "expected_answer": "There are 5 projects in Yemen: P003 ('Emergency WASH Yemen'), P024 ('Child Nutrition Yemen'), P219 ('Emergency Health Yemen'), P238 ('Food Security Yemen'), P273 ('Humanitarian Cash Yemen')."
+  },
+  {
+    "id": "q092",
+    "category": "listing",
+    "question": "Elenca tutti i progetti in Burundi.",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT project_id, project_name FROM projects WHERE country = 'Burundi';",
+    "expected_rows": [
+      {
+        "project_id": "P004",
+        "project_name": "WASH Burundi"
+      },
+      {
+        "project_id": "P047",
+        "project_name": "Food Security Burundi"
+      },
+      {
+        "project_id": "P079",
+        "project_name": "Displacement Burundi"
+      },
+      {
+        "project_id": "P105",
+        "project_name": "Women Empowerment Burundi"
+      }
+    ],
+    "expected_answer": "There are 4 projects in Burundi: P004 ('WASH Burundi'), P047 ('Food Security Burundi'), P079 ('Displacement Burundi'), P105 ('Women Empowerment Burundi')."
+  },
+  {
+    "id": "q093",
+    "category": "listing",
+    "question": "Elenca le sottocategorie di costo registrate per il progetto P001 nel 2022.",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT sub_category, amount_chf FROM budget_actuals WHERE project_id = 'P001' AND budget_line = 'Total project costs' AND fiscal_year = 2022;",
+    "expected_rows": [
+      {
+        "sub_category": "Operational Costs",
+        "amount_chf": 271000
+      },
+      {
+        "sub_category": "Monitoring & Evaluation",
+        "amount_chf": 66000
+      },
+      {
+        "sub_category": "Staff Costs",
+        "amount_chf": 309000
+      },
+      {
+        "sub_category": "Training & Capacity",
+        "amount_chf": 95000
+      },
+      {
+        "sub_category": "Partner Costs",
+        "amount_chf": 242000
+      },
+      {
+        "sub_category": "Equipment & Supplies",
+        "amount_chf": 109000
+      }
+    ],
+    "expected_answer": "Recorded for P001 (2022): Operational Costs (271,000 CHF), Monitoring & Evaluation (66,000 CHF), Staff Costs (309,000 CHF), Training & Capacity (95,000 CHF), Partner Costs (242,000 CHF), Equipment & Supplies (109,000 CHF)."
+  },
+  {
+    "id": "q094",
+    "category": "listing",
+    "question": "Elenca le sottocategorie di reddito registrate per il progetto P001 nel 2022.",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT sub_category, amount_chf FROM budget_actuals WHERE project_id = 'P001' AND budget_line = 'Total income' AND fiscal_year = 2022;",
+    "expected_rows": [
+      {
+        "sub_category": "Own Funds / Reserves",
+        "amount_chf": 26000
+      },
+      {
+        "sub_category": "Caritas Network",
+        "amount_chf": 22000
+      },
+      {
+        "sub_category": "EU Humanitarian Aid",
+        "amount_chf": 116000
+      },
+      {
+        "sub_category": "SDC Contribution",
+        "amount_chf": 258000
+      },
+      {
+        "sub_category": "Multilateral (UN)",
+        "amount_chf": 92000
+      },
+      {
+        "sub_category": "Other Government",
+        "amount_chf": 99000
+      },
+      {
+        "sub_category": "Private Foundations",
+        "amount_chf": 38000
+      }
+    ],
+    "expected_answer": "Recorded for P001 (2022): Own Funds / Reserves (26,000 CHF), Caritas Network (22,000 CHF), EU Humanitarian Aid (116,000 CHF), SDC Contribution (258,000 CHF), Multilateral (UN) (92,000 CHF), Other Government (99,000 CHF), Private Foundations (38,000 CHF)."
+  },
+  {
+    "id": "q095",
+    "category": "listing",
+    "question": "Elenca tutte le domande di sovvenzione per il progetto P001.",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT grant_id, donor_name, grant_status FROM grant_applications WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "grant_id": "PQ-2022-0001",
+        "donor_name": "SECO",
+        "grant_status": "cancelled"
+      },
+      {
+        "grant_id": "PQ-2024-0002",
+        "donor_name": "OCHA",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2022-0003",
+        "donor_name": "Oxfam",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2021-0004",
+        "donor_name": "AFD (France)",
+        "grant_status": "successful"
+      }
+    ],
+    "expected_answer": "Project P001 has 4 grant application(s): PQ-2022-0001 from SECO (cancelled); PQ-2024-0002 from OCHA (successful); PQ-2022-0003 from Oxfam (in_progress); PQ-2021-0004 from AFD (France) (successful)."
+  },
+  {
+    "id": "q096",
+    "category": "listing",
+    "question": "Elenca tutte le richieste di sovvenzione per il progetto P002.",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT grant_id, donor_name, grant_status FROM grant_applications WHERE project_id = 'P002';",
+    "expected_rows": [
+      {
+        "grant_id": "PQ-2022-0005",
+        "donor_name": "OCHA",
+        "grant_status": "unsuccessful"
+      },
+      {
+        "grant_id": "PQ-2023-0006",
+        "donor_name": "EU Development Fund (EDF)",
+        "grant_status": "cancelled"
+      },
+      {
+        "grant_id": "PQ-2021-0007",
+        "donor_name": "Helvetas",
+        "grant_status": "unsuccessful"
+      }
+    ],
+    "expected_answer": "Project P002 has 3 grant application(s): PQ-2022-0005 from OCHA (unsuccessful); PQ-2023-0006 from EU Development Fund (EDF) (cancelled); PQ-2021-0007 from Helvetas (unsuccessful)."
+  },
+  {
+    "id": "q097",
+    "category": "listing",
+    "question": "Elencare le richieste di sovvenzione in corso per il progetto P002.",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT grant_id, donor_name FROM grant_applications WHERE project_id = 'P002' AND grant_status = 'in_progress';",
+    "expected_rows": [],
+    "expected_answer": "No in-progress grants for P002."
+  },
+  {
+    "id": "q098",
+    "category": "listing",
+    "question": "Elenca i progetti attivi nello Yemen.",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT project_id, project_name FROM projects WHERE country = 'Yemen' AND is_active = 1;",
+    "expected_rows": [
+      {
+        "project_id": "P219",
+        "project_name": "Emergency Health Yemen"
+      },
+      {
+        "project_id": "P238",
+        "project_name": "Food Security Yemen"
+      },
+      {
+        "project_id": "P273",
+        "project_name": "Humanitarian Cash Yemen"
+      }
+    ],
+    "expected_answer": "There are 3 active project(s) in Yemen: P219 ('Emergency Health Yemen'), P238 ('Food Security Yemen'), P273 ('Humanitarian Cash Yemen')."
+  },
+  {
+    "id": "q099",
+    "category": "listing",
+    "question": "Elenca i progetti in Kosovo e il loro stato.",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT project_id, project_name, project_status FROM projects WHERE country = 'Kosovo';",
+    "expected_rows": [
+      {
+        "project_id": "P005",
+        "project_name": "Reconciliation Kosovo",
+        "project_status": "Completed"
+      },
+      {
+        "project_id": "P043",
+        "project_name": "Rural Development Kosovo",
+        "project_status": "Active"
+      },
+      {
+        "project_id": "P111",
+        "project_name": "Women Entrepreneurs Kosovo",
+        "project_status": "Active"
+      },
+      {
+        "project_id": "P245",
+        "project_name": "Youth Employment Kosovo",
+        "project_status": "Active"
+      },
+      {
+        "project_id": "P286",
+        "project_name": "Economic Integration Kosovo",
+        "project_status": "Cancelled"
+      }
+    ],
+    "expected_answer": "Projects in Kosovo (5): P005 - Reconciliation Kosovo (Completed), P043 - Rural Development Kosovo (Active), P111 - Women Entrepreneurs Kosovo (Active), P245 - Youth Employment Kosovo (Active), P286 - Economic Integration Kosovo (Cancelled)."
+  },
+  {
+    "id": "q100",
+    "category": "listing",
+    "question": "Elenca i progetti in Uganda e i loro temi.",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT project_id, project_name, theme FROM projects WHERE country = 'Uganda';",
+    "expected_rows": [
+      {
+        "project_id": "P002",
+        "project_name": "Land & Rights Uganda",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P030",
+        "project_name": "Vocational Training Uganda",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P064",
+        "project_name": "Refugee Integration Uganda",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P153",
+        "project_name": "Child Protection Uganda",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P185",
+        "project_name": "Sustainable Agriculture Uganda",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P257",
+        "project_name": "Food Systems Uganda",
+        "theme": "Income"
+      }
+    ],
+    "expected_answer": "Projects in Uganda (6): P002 - Land & Rights Uganda (Income), P030 - Vocational Training Uganda (Income), P064 - Refugee Integration Uganda (Income), P153 - Child Protection Uganda (Income), P185 - Sustainable Agriculture Uganda (Income), P257 - Food Systems Uganda (Income)."
+  }
+]

@@ -1,0 +1,3421 @@
+[
+  {
+    "id": "q001",
+    "category": "join_count",
+    "question": "How many grant applications are tied to projects in Yemen?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.country = 'Yemen';",
+    "expected_rows": [
+      {
+        "COUNT(*)": 12
+      }
+    ],
+    "expected_answer": "There are 12 applications for projects in Yemen."
+  },
+  {
+    "id": "q002",
+    "category": "join_count",
+    "question": "How many grant applications are tied to projects in the East Africa region?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.region = 'East Africa';",
+    "expected_rows": [
+      {
+        "COUNT(*)": 104
+      }
+    ],
+    "expected_answer": "There are 104 applications for East Africa projects."
+  },
+  {
+    "id": "q003",
+    "category": "join_count",
+    "question": "How many grant applications are tied to projects in the Sahel region?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.region = 'Sahel';",
+    "expected_rows": [
+      {
+        "COUNT(*)": 125
+      }
+    ],
+    "expected_answer": "There are 125 applications for Sahel projects."
+  },
+  {
+    "id": "q004",
+    "category": "join_count",
+    "question": "How many successful grants are tied to Climate-theme projects?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.theme = 'Climate' AND g.grant_status = 'successful';",
+    "expected_rows": [
+      {
+        "COUNT(*)": 50
+      }
+    ],
+    "expected_answer": "There are 50 successful Climate-theme grants."
+  },
+  {
+    "id": "q005",
+    "category": "join_count",
+    "question": "How many successful grants are tied to Humanitarian Aid projects?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.theme = 'Humanitarian Aid' AND g.grant_status = 'successful';",
+    "expected_rows": [
+      {
+        "COUNT(*)": 178
+      }
+    ],
+    "expected_answer": "There are 178 successful Humanitarian Aid grants."
+  },
+  {
+    "id": "q006",
+    "category": "join_count",
+    "question": "How many in-progress grants are tied to active projects?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.is_active = 1 AND g.grant_status = 'in_progress';",
+    "expected_rows": [
+      {
+        "COUNT(*)": 110
+      }
+    ],
+    "expected_answer": "There are 110 in-progress grants for active projects."
+  },
+  {
+    "id": "q007",
+    "category": "join_count",
+    "question": "How many grants are tied to projects led by a UN Agency?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.lead_partner = 'UN Agency';",
+    "expected_rows": [
+      {
+        "COUNT(*)": 163
+      }
+    ],
+    "expected_answer": "There are 163 grants for UN-Agency-led projects."
+  },
+  {
+    "id": "q008",
+    "category": "join_count",
+    "question": "How many grants are tied to projects led by a Local NGO?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.lead_partner = 'Local NGO';",
+    "expected_rows": [
+      {
+        "COUNT(*)": 185
+      }
+    ],
+    "expected_answer": "There are 185 grants for Local-NGO-led projects."
+  },
+  {
+    "id": "q009",
+    "category": "join_count",
+    "question": "How many grants are tied to projects with Service Contract funding type?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.funding_type = 'Service Contract';",
+    "expected_rows": [
+      {
+        "COUNT(*)": 287
+      }
+    ],
+    "expected_answer": "There are 287 grants for Service Contract projects."
+  },
+  {
+    "id": "q010",
+    "category": "join_count",
+    "question": "How many distinct donors have applied for projects in the East Africa region?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(DISTINCT g.donor_name) FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.region = 'East Africa';",
+    "expected_rows": [
+      {
+        "COUNT(DISTINCT g.donor_name)": 45
+      }
+    ],
+    "expected_answer": "There are 45 distinct donors for East Africa projects."
+  },
+  {
+    "id": "q011",
+    "category": "join_count",
+    "question": "How many distinct donors have applied for projects in Yemen?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(DISTINCT g.donor_name) FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.country = 'Yemen';",
+    "expected_rows": [
+      {
+        "COUNT(DISTINCT g.donor_name)": 10
+      }
+    ],
+    "expected_answer": "There are 10 distinct donors for Yemen projects."
+  },
+  {
+    "id": "q012",
+    "category": "join_count",
+    "question": "How many distinct projects has SECO applied to?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(DISTINCT g.project_id) FROM grant_applications g WHERE g.donor_name = 'SECO';",
+    "expected_rows": [
+      {
+        "COUNT(DISTINCT g.project_id)": 15
+      }
+    ],
+    "expected_answer": "There are 15 distinct projects SECO has applied to."
+  },
+  {
+    "id": "q013",
+    "category": "join_count",
+    "question": "How many budget records exist for projects in Yemen?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.country = 'Yemen';",
+    "expected_rows": [
+      {
+        "COUNT(*)": 423
+      }
+    ],
+    "expected_answer": "There are 423 budget records for Yemen projects."
+  },
+  {
+    "id": "q014",
+    "category": "join_count",
+    "question": "How many budget records exist for active projects?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.is_active = 1;",
+    "expected_rows": [
+      {
+        "COUNT(*)": 12618
+      }
+    ],
+    "expected_answer": "There are 12618 budget records for active projects."
+  },
+  {
+    "id": "q015",
+    "category": "join_count",
+    "question": "How many budget records exist for Climate-theme projects?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.theme = 'Climate';",
+    "expected_rows": [
+      {
+        "COUNT(*)": 2255
+      }
+    ],
+    "expected_answer": "There are 2255 budget records for Climate-theme projects."
+  },
+  {
+    "id": "q016",
+    "category": "join_count",
+    "question": "How many distinct projects have Staff Cost records?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT COUNT(DISTINCT project_id) FROM budget_actuals WHERE sub_category = 'Staff Costs';",
+    "expected_rows": [
+      {
+        "COUNT(DISTINCT project_id)": 250
+      }
+    ],
+    "expected_answer": "There are 250 distinct projects with Staff Cost records."
+  },
+  {
+    "id": "q017",
+    "category": "join_count",
+    "question": "How many grants tied to Migration-theme projects come from Government donors?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.theme = 'Migration' AND g.donor_type = 'Government';",
+    "expected_rows": [
+      {
+        "COUNT(*)": 25
+      }
+    ],
+    "expected_answer": "There are 25 Government grants for Migration projects."
+  },
+  {
+    "id": "q018",
+    "category": "join_count",
+    "question": "How many grants tied to projects in the Asia & Pacific region come from Multilateral donors?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.region = 'Asia & Pacific' AND g.donor_type = 'Multilateral';",
+    "expected_rows": [
+      {
+        "COUNT(*)": 33
+      }
+    ],
+    "expected_answer": "There are 33 Multilateral grants for Asia & Pacific projects."
+  },
+  {
+    "id": "q019",
+    "category": "join_count",
+    "question": "How many active Climate-theme projects are there?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT COUNT(*) FROM projects WHERE theme = 'Climate' AND is_active = 1;",
+    "expected_rows": [
+      {
+        "COUNT(*)": 19
+      }
+    ],
+    "expected_answer": "There are 19 active Climate-theme projects."
+  },
+  {
+    "id": "q020",
+    "category": "join_count",
+    "question": "How many distinct donors have at least one successful grant?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT COUNT(DISTINCT donor_name) FROM grant_applications WHERE grant_status = 'successful';",
+    "expected_rows": [
+      {
+        "COUNT(DISTINCT donor_name)": 50
+      }
+    ],
+    "expected_answer": "There are 50 distinct donors with successful grants."
+  },
+  {
+    "id": "q021",
+    "category": "join_sum",
+    "question": "What are the total project costs for projects in the East Africa region?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(ba.amount_chf) AS total FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.region = 'East Africa' AND ba.budget_line = 'Total project costs';",
+    "expected_rows": [
+      {
+        "total": 148135000
+      }
+    ],
+    "expected_answer": "Total project costs in East Africa: 148,135,000 CHF."
+  },
+  {
+    "id": "q022",
+    "category": "join_sum",
+    "question": "What is the total income for projects in the Sahel region?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(ba.amount_chf) AS total FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.region = 'Sahel' AND ba.budget_line = 'Total income';",
+    "expected_rows": [
+      {
+        "total": 157689000
+      }
+    ],
+    "expected_answer": "Total income in the Sahel region: 157,689,000 CHF."
+  },
+  {
+    "id": "q023",
+    "category": "join_sum",
+    "question": "What are the total project costs for Climate-theme projects?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(ba.amount_chf) AS total FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.theme = 'Climate' AND ba.budget_line = 'Total project costs';",
+    "expected_rows": [
+      {
+        "total": 125200000
+      }
+    ],
+    "expected_answer": "Total project costs for Climate projects: 125,200,000 CHF."
+  },
+  {
+    "id": "q024",
+    "category": "join_sum",
+    "question": "What are the total project costs for Humanitarian Aid projects?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(ba.amount_chf) AS total FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.theme = 'Humanitarian Aid' AND ba.budget_line = 'Total project costs';",
+    "expected_rows": [
+      {
+        "total": 532310000
+      }
+    ],
+    "expected_answer": "Total project costs for Humanitarian Aid projects: 532,310,000 CHF."
+  },
+  {
+    "id": "q025",
+    "category": "join_sum",
+    "question": "What is the total income for active projects?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(ba.amount_chf) AS total FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.is_active = 1 AND ba.budget_line = 'Total income';",
+    "expected_rows": [
+      {
+        "total": 538137000
+      }
+    ],
+    "expected_answer": "Total income (active projects): 538,137,000 CHF."
+  },
+  {
+    "id": "q026",
+    "category": "join_sum",
+    "question": "What are the total project costs for active projects?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(ba.amount_chf) AS total FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.is_active = 1 AND ba.budget_line = 'Total project costs';",
+    "expected_rows": [
+      {
+        "total": 724250000
+      }
+    ],
+    "expected_answer": "Total project costs (active projects): 724,250,000 CHF."
+  },
+  {
+    "id": "q027",
+    "category": "join_sum",
+    "question": "What are the total Staff Costs for projects in Latin America & Caribbean?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(ba.amount_chf) AS total FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.region = 'Latin America & Caribbean' AND ba.sub_category = 'Staff Costs';",
+    "expected_rows": [
+      {
+        "total": 67223000
+      }
+    ],
+    "expected_answer": "Staff Costs in Latin America & Caribbean: 67,223,000 CHF."
+  },
+  {
+    "id": "q028",
+    "category": "join_sum",
+    "question": "What are the total Partner Costs for projects in East Africa?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(ba.amount_chf) AS total FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.region = 'East Africa' AND ba.sub_category = 'Partner Costs';",
+    "expected_rows": [
+      {
+        "total": 30268000
+      }
+    ],
+    "expected_answer": "Partner Costs in East Africa: 30,268,000 CHF."
+  },
+  {
+    "id": "q029",
+    "category": "join_sum",
+    "question": "What are the total Operational Costs for Climate-theme projects?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(ba.amount_chf) AS total FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.theme = 'Climate' AND ba.sub_category = 'Operational Costs';",
+    "expected_rows": [
+      {
+        "total": 28909000
+      }
+    ],
+    "expected_answer": "Operational Costs for Climate projects: 28,909,000 CHF."
+  },
+  {
+    "id": "q030",
+    "category": "join_sum",
+    "question": "What is the total SDC Contribution income for projects in the Sahel region?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(ba.amount_chf) AS total FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.region = 'Sahel' AND ba.sub_category = 'SDC Contribution';",
+    "expected_rows": [
+      {
+        "total": 75212000
+      }
+    ],
+    "expected_answer": "SDC Contribution income in the Sahel: 75,212,000 CHF."
+  },
+  {
+    "id": "q031",
+    "category": "join_sum",
+    "question": "What is the total EU Humanitarian Aid income for Humanitarian Aid projects?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(ba.amount_chf) AS total FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.theme = 'Humanitarian Aid' AND ba.sub_category = 'EU Humanitarian Aid';",
+    "expected_rows": [
+      {
+        "total": 56403000
+      }
+    ],
+    "expected_answer": "EU Humanitarian Aid income for Humanitarian Aid projects: 56,403,000 CHF."
+  },
+  {
+    "id": "q032",
+    "category": "join_sum",
+    "question": "What are the total project costs in 2024 for projects in the Asia & Pacific region?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(ba.amount_chf) AS total FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.region = 'Asia & Pacific' AND ba.fiscal_year = 2024 AND ba.budget_line = 'Total project costs';",
+    "expected_rows": [
+      {
+        "total": 37750000
+      }
+    ],
+    "expected_answer": "Total project costs in Asia & Pacific (2024): 37,750,000 CHF."
+  },
+  {
+    "id": "q033",
+    "category": "join_sum",
+    "question": "What is the total income in 2023 for projects in Eastern Europe?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(ba.amount_chf) AS total FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.region = 'Eastern Europe' AND ba.fiscal_year = 2023 AND ba.budget_line = 'Total income';",
+    "expected_rows": [
+      {
+        "total": 19053000
+      }
+    ],
+    "expected_answer": "Total income in Eastern Europe (2023): 19,053,000 CHF."
+  },
+  {
+    "id": "q034",
+    "category": "join_sum",
+    "question": "What is the total amount approved across grants for projects in Yemen?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT SUM(g.amount_approved_chf) AS total FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.country = 'Yemen';",
+    "expected_rows": [
+      {
+        "total": 4244000.0
+      }
+    ],
+    "expected_answer": "Total approved for Yemen projects: 4,244,000 CHF."
+  },
+  {
+    "id": "q035",
+    "category": "join_sum",
+    "question": "What is the total amount approved across grants for Climate-theme projects?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT SUM(g.amount_approved_chf) AS total FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.theme = 'Climate';",
+    "expected_rows": [
+      {
+        "total": 23427000.0
+      }
+    ],
+    "expected_answer": "Total approved for Climate projects: 23,427,000 CHF."
+  },
+  {
+    "id": "q036",
+    "category": "join_sum",
+    "question": "What is the total amount approved across grants for active projects?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT SUM(g.amount_approved_chf) AS total FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.is_active = 1;",
+    "expected_rows": [
+      {
+        "total": 107683000.0
+      }
+    ],
+    "expected_answer": "Total approved for active projects: 107,683,000 CHF."
+  },
+  {
+    "id": "q037",
+    "category": "join_sum",
+    "question": "What is the total amount approved across grants for projects led by UN Agency?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT SUM(g.amount_approved_chf) AS total FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.lead_partner = 'UN Agency';",
+    "expected_rows": [
+      {
+        "total": 45282000.0
+      }
+    ],
+    "expected_answer": "Total approved for UN-Agency-led projects: 45,282,000 CHF."
+  },
+  {
+    "id": "q038",
+    "category": "join_sum",
+    "question": "What is the total amount requested across grants for projects in the Sahel region?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT SUM(g.amount_requested_chf) AS total FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.region = 'Sahel';",
+    "expected_rows": [
+      {
+        "total": 71987000
+      }
+    ],
+    "expected_answer": "Total requested for Sahel projects: 71,987,000 CHF."
+  },
+  {
+    "id": "q039",
+    "category": "join_sum",
+    "question": "What is the total beneficiaries target across active Migration-theme projects?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT SUM(beneficiaries_target) AS total FROM projects WHERE theme = 'Migration' AND is_active = 1;",
+    "expected_rows": [
+      {
+        "total": 156715
+      }
+    ],
+    "expected_answer": "Active Migration-theme target: 156,715 people."
+  },
+  {
+    "id": "q040",
+    "category": "join_sum",
+    "question": "What is the total beneficiaries target across projects in the East Africa region?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT SUM(beneficiaries_target) AS total FROM projects WHERE region = 'East Africa';",
+    "expected_rows": [
+      {
+        "total": 435214
+      }
+    ],
+    "expected_answer": "Total beneficiaries target (East Africa): 435,214 people."
+  },
+  {
+    "id": "q041",
+    "category": "groupby",
+    "question": "How many projects are there per region?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT region, COUNT(*) AS n FROM projects GROUP BY region;",
+    "expected_rows": [
+      {
+        "region": "Asia & Pacific",
+        "n": 51
+      },
+      {
+        "region": "East Africa",
+        "n": 45
+      },
+      {
+        "region": "Eastern Europe",
+        "n": 27
+      },
+      {
+        "region": "Latin America & Caribbean",
+        "n": 51
+      },
+      {
+        "region": "Middle East & North Africa",
+        "n": 28
+      },
+      {
+        "region": "Sahel",
+        "n": 47
+      },
+      {
+        "region": "Southern Africa",
+        "n": 22
+      },
+      {
+        "region": "West Africa",
+        "n": 25
+      }
+    ],
+    "expected_answer": "Project counts by region: 8 group(s) — see expected_rows."
+  },
+  {
+    "id": "q042",
+    "category": "groupby",
+    "question": "How many projects are there per theme?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT theme, COUNT(*) AS n FROM projects GROUP BY theme;",
+    "expected_rows": [
+      {
+        "theme": "Climate",
+        "n": 28
+      },
+      {
+        "theme": "Humanitarian Aid",
+        "n": 114
+      },
+      {
+        "theme": "Income",
+        "n": 121
+      },
+      {
+        "theme": "Migration",
+        "n": 33
+      }
+    ],
+    "expected_answer": "Project counts by theme: 4 group(s) — see expected_rows."
+  },
+  {
+    "id": "q043",
+    "category": "groupby",
+    "question": "How many projects are there per lead partner?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT lead_partner, COUNT(*) AS n FROM projects GROUP BY lead_partner;",
+    "expected_rows": [
+      {
+        "lead_partner": "Caritas Switzerland",
+        "n": 48
+      },
+      {
+        "lead_partner": "Government Agency",
+        "n": 56
+      },
+      {
+        "lead_partner": "Local NGO",
+        "n": 77
+      },
+      {
+        "lead_partner": "Research Institute",
+        "n": 53
+      },
+      {
+        "lead_partner": "UN Agency",
+        "n": 62
+      }
+    ],
+    "expected_answer": "Project counts by lead partner: 5 group(s) — see expected_rows."
+  },
+  {
+    "id": "q044",
+    "category": "groupby",
+    "question": "How many projects are there per funding type?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT funding_type, COUNT(*) AS n FROM projects GROUP BY funding_type;",
+    "expected_rows": [
+      {
+        "funding_type": "Institutional Grant",
+        "n": 149
+      },
+      {
+        "funding_type": "Project Co-funding",
+        "n": 33
+      },
+      {
+        "funding_type": "Service Contract",
+        "n": 114
+      }
+    ],
+    "expected_answer": "Project counts by funding type: 3 group(s) — see expected_rows."
+  },
+  {
+    "id": "q045",
+    "category": "groupby",
+    "question": "How many grant applications are there per donor type?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT donor_type, COUNT(*) AS n FROM grant_applications GROUP BY donor_type;",
+    "expected_rows": [
+      {
+        "donor_type": "Government",
+        "n": 204
+      },
+      {
+        "donor_type": "Multilateral",
+        "n": 191
+      },
+      {
+        "donor_type": "NGO",
+        "n": 199
+      },
+      {
+        "donor_type": "Private",
+        "n": 158
+      }
+    ],
+    "expected_answer": "Application counts by donor type: 4 group(s) — see expected_rows."
+  },
+  {
+    "id": "q046",
+    "category": "groupby",
+    "question": "How many grant applications are there per grant status?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT grant_status, COUNT(*) AS n FROM grant_applications GROUP BY grant_status;",
+    "expected_rows": [
+      {
+        "grant_status": "cancelled",
+        "n": 45
+      },
+      {
+        "grant_status": "in_progress",
+        "n": 194
+      },
+      {
+        "grant_status": "successful",
+        "n": 432
+      },
+      {
+        "grant_status": "unsuccessful",
+        "n": 81
+      }
+    ],
+    "expected_answer": "Applications per grant status: 4 group(s) — see expected_rows."
+  },
+  {
+    "id": "q047",
+    "category": "groupby",
+    "question": "What is the total approved amount per donor type for successful grants?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT donor_type, SUM(amount_approved_chf) AS total_approved_chf FROM grant_applications WHERE grant_status = 'successful' GROUP BY donor_type;",
+    "expected_rows": [
+      {
+        "donor_type": "Government",
+        "total_approved_chf": 51573000.0
+      },
+      {
+        "donor_type": "Multilateral",
+        "total_approved_chf": 47942000.0
+      },
+      {
+        "donor_type": "NGO",
+        "total_approved_chf": 55269000.0
+      },
+      {
+        "donor_type": "Private",
+        "total_approved_chf": 47837000.0
+      }
+    ],
+    "expected_answer": "Total approved per donor type (successful): 4 group(s) — see expected_rows."
+  },
+  {
+    "id": "q048",
+    "category": "groupby",
+    "question": "What is the total approved amount per donor country for successful grants?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT donor_country, SUM(amount_approved_chf) AS total_approved_chf FROM grant_applications WHERE grant_status = 'successful' GROUP BY donor_country;",
+    "expected_rows": [
+      {
+        "donor_country": "AT",
+        "total_approved_chf": 5215000.0
+      },
+      {
+        "donor_country": "CA",
+        "total_approved_chf": 6877000.0
+      },
+      {
+        "donor_country": "CH",
+        "total_approved_chf": 29256000.0
+      },
+      {
+        "donor_country": "DE",
+        "total_approved_chf": 28591000.0
+      },
+      {
+        "donor_country": "DK",
+        "total_approved_chf": 1736000.0
+      },
+      {
+        "donor_country": "EU",
+        "total_approved_chf": 8251000.0
+      },
+      {
+        "donor_country": "FR",
+        "total_approved_chf": 9897000.0
+      },
+      {
+        "donor_country": "INT",
+        "total_approved_chf": 25916000.0
+      },
+      {
+        "donor_country": "IT",
+        "total_approved_chf": 11893000.0
+      },
+      {
+        "donor_country": "JP",
+        "total_approved_chf": 2394000.0
+      },
+      {
+        "donor_country": "KR",
+        "total_approved_chf": 1084000.0
+      },
+      {
+        "donor_country": "NO",
+        "total_approved_chf": 3757000.0
+      },
+      {
+        "donor_country": "SE",
+        "total_approved_chf": 1519000.0
+      },
+      {
+        "donor_country": "UK",
+        "total_approved_chf": 26499000.0
+      },
+      {
+        "donor_country": "UN",
+        "total_approved_chf": 18876000.0
+      },
+      {
+        "donor_country": "US",
+        "total_approved_chf": 20860000.0
+      }
+    ],
+    "expected_answer": "Total approved per donor country (successful): 16 group(s) — see expected_rows."
+  },
+  {
+    "id": "q049",
+    "category": "groupby",
+    "question": "What is the total project cost per region?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT p.region, SUM(ba.amount_chf) AS total_costs_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE ba.budget_line = 'Total project costs' GROUP BY p.region;",
+    "expected_rows": [
+      {
+        "region": "Asia & Pacific",
+        "total_costs_chf": 204891000
+      },
+      {
+        "region": "East Africa",
+        "total_costs_chf": 148135000
+      },
+      {
+        "region": "Eastern Europe",
+        "total_costs_chf": 128052000
+      },
+      {
+        "region": "Latin America & Caribbean",
+        "total_costs_chf": 221324000
+      },
+      {
+        "region": "Middle East & North Africa",
+        "total_costs_chf": 152078000
+      },
+      {
+        "region": "Sahel",
+        "total_costs_chf": 214286000
+      },
+      {
+        "region": "Southern Africa",
+        "total_costs_chf": 101962000
+      },
+      {
+        "region": "West Africa",
+        "total_costs_chf": 94523000
+      }
+    ],
+    "expected_answer": "Total project costs per region: 8 group(s) — see expected_rows."
+  },
+  {
+    "id": "q050",
+    "category": "groupby",
+    "question": "What is the total income per region?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT p.region, SUM(ba.amount_chf) AS total_income_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE ba.budget_line = 'Total income' GROUP BY p.region;",
+    "expected_rows": [
+      {
+        "region": "Asia & Pacific",
+        "total_income_chf": 153493000
+      },
+      {
+        "region": "East Africa",
+        "total_income_chf": 111059000
+      },
+      {
+        "region": "Eastern Europe",
+        "total_income_chf": 98012000
+      },
+      {
+        "region": "Latin America & Caribbean",
+        "total_income_chf": 161506000
+      },
+      {
+        "region": "Middle East & North Africa",
+        "total_income_chf": 110389000
+      },
+      {
+        "region": "Sahel",
+        "total_income_chf": 157689000
+      },
+      {
+        "region": "Southern Africa",
+        "total_income_chf": 73909000
+      },
+      {
+        "region": "West Africa",
+        "total_income_chf": 69983000
+      }
+    ],
+    "expected_answer": "Total income per region: 8 group(s) — see expected_rows."
+  },
+  {
+    "id": "q051",
+    "category": "groupby",
+    "question": "What is the total project cost per theme?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT p.theme, SUM(ba.amount_chf) AS total_costs_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE ba.budget_line = 'Total project costs' GROUP BY p.theme;",
+    "expected_rows": [
+      {
+        "theme": "Climate",
+        "total_costs_chf": 125200000
+      },
+      {
+        "theme": "Humanitarian Aid",
+        "total_costs_chf": 532310000
+      },
+      {
+        "theme": "Income",
+        "total_costs_chf": 459900000
+      },
+      {
+        "theme": "Migration",
+        "total_costs_chf": 147841000
+      }
+    ],
+    "expected_answer": "Total project costs per theme: 4 group(s) — see expected_rows."
+  },
+  {
+    "id": "q052",
+    "category": "groupby",
+    "question": "What is the total income per theme?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT p.theme, SUM(ba.amount_chf) AS total_income_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE ba.budget_line = 'Total income' GROUP BY p.theme;",
+    "expected_rows": [
+      {
+        "theme": "Climate",
+        "total_income_chf": 92650000
+      },
+      {
+        "theme": "Humanitarian Aid",
+        "total_income_chf": 390775000
+      },
+      {
+        "theme": "Income",
+        "total_income_chf": 341859000
+      },
+      {
+        "theme": "Migration",
+        "total_income_chf": 110756000
+      }
+    ],
+    "expected_answer": "Total income per theme: 4 group(s) — see expected_rows."
+  },
+  {
+    "id": "q053",
+    "category": "groupby",
+    "question": "What are the total Staff Costs per region?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT p.region, SUM(ba.amount_chf) AS staff_costs_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE ba.sub_category = 'Staff Costs' GROUP BY p.region;",
+    "expected_rows": [
+      {
+        "region": "Asia & Pacific",
+        "staff_costs_chf": 62357000
+      },
+      {
+        "region": "East Africa",
+        "staff_costs_chf": 45631000
+      },
+      {
+        "region": "Eastern Europe",
+        "staff_costs_chf": 39092000
+      },
+      {
+        "region": "Latin America & Caribbean",
+        "staff_costs_chf": 67223000
+      },
+      {
+        "region": "Middle East & North Africa",
+        "staff_costs_chf": 45840000
+      },
+      {
+        "region": "Sahel",
+        "staff_costs_chf": 65405000
+      },
+      {
+        "region": "Southern Africa",
+        "staff_costs_chf": 30696000
+      },
+      {
+        "region": "West Africa",
+        "staff_costs_chf": 28444000
+      }
+    ],
+    "expected_answer": "Staff Costs per region: 8 group(s) — see expected_rows."
+  },
+  {
+    "id": "q054",
+    "category": "groupby",
+    "question": "What are the total Partner Costs per region?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT p.region, SUM(ba.amount_chf) AS partner_costs_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE ba.sub_category = 'Partner Costs' GROUP BY p.region;",
+    "expected_rows": [
+      {
+        "region": "Asia & Pacific",
+        "partner_costs_chf": 43218000
+      },
+      {
+        "region": "East Africa",
+        "partner_costs_chf": 30268000
+      },
+      {
+        "region": "Eastern Europe",
+        "partner_costs_chf": 27197000
+      },
+      {
+        "region": "Latin America & Caribbean",
+        "partner_costs_chf": 45772000
+      },
+      {
+        "region": "Middle East & North Africa",
+        "partner_costs_chf": 32422000
+      },
+      {
+        "region": "Sahel",
+        "partner_costs_chf": 45074000
+      },
+      {
+        "region": "Southern Africa",
+        "partner_costs_chf": 21463000
+      },
+      {
+        "region": "West Africa",
+        "partner_costs_chf": 19972000
+      }
+    ],
+    "expected_answer": "Partner Costs per region: 8 group(s) — see expected_rows."
+  },
+  {
+    "id": "q055",
+    "category": "groupby",
+    "question": "What are the total project costs per fiscal year?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT fiscal_year, SUM(amount_chf) AS total_costs_chf FROM budget_actuals WHERE budget_line = 'Total project costs' GROUP BY fiscal_year;",
+    "expected_rows": [
+      {
+        "fiscal_year": 2019,
+        "total_costs_chf": 71143000
+      },
+      {
+        "fiscal_year": 2020,
+        "total_costs_chf": 237098000
+      },
+      {
+        "fiscal_year": 2021,
+        "total_costs_chf": 248498000
+      },
+      {
+        "fiscal_year": 2022,
+        "total_costs_chf": 262668000
+      },
+      {
+        "fiscal_year": 2023,
+        "total_costs_chf": 251162000
+      },
+      {
+        "fiscal_year": 2024,
+        "total_costs_chf": 194682000
+      }
+    ],
+    "expected_answer": "Total project costs per year: 6 group(s) — see expected_rows."
+  },
+  {
+    "id": "q056",
+    "category": "groupby",
+    "question": "What is the total income per fiscal year?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT fiscal_year, SUM(amount_chf) AS total_income_chf FROM budget_actuals WHERE budget_line = 'Total income' GROUP BY fiscal_year;",
+    "expected_rows": [
+      {
+        "fiscal_year": 2019,
+        "total_income_chf": 54233000
+      },
+      {
+        "fiscal_year": 2020,
+        "total_income_chf": 173865000
+      },
+      {
+        "fiscal_year": 2021,
+        "total_income_chf": 185296000
+      },
+      {
+        "fiscal_year": 2022,
+        "total_income_chf": 194416000
+      },
+      {
+        "fiscal_year": 2023,
+        "total_income_chf": 185555000
+      },
+      {
+        "fiscal_year": 2024,
+        "total_income_chf": 142675000
+      }
+    ],
+    "expected_answer": "Total income per year: 6 group(s) — see expected_rows."
+  },
+  {
+    "id": "q057",
+    "category": "groupby",
+    "question": "What is the total Staff Costs per fiscal year?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT fiscal_year, SUM(amount_chf) AS staff_costs_chf FROM budget_actuals WHERE sub_category = 'Staff Costs' GROUP BY fiscal_year;",
+    "expected_rows": [
+      {
+        "fiscal_year": 2019,
+        "staff_costs_chf": 21356000
+      },
+      {
+        "fiscal_year": 2020,
+        "staff_costs_chf": 71992000
+      },
+      {
+        "fiscal_year": 2021,
+        "staff_costs_chf": 76028000
+      },
+      {
+        "fiscal_year": 2022,
+        "staff_costs_chf": 79578000
+      },
+      {
+        "fiscal_year": 2023,
+        "staff_costs_chf": 76530000
+      },
+      {
+        "fiscal_year": 2024,
+        "staff_costs_chf": 59204000
+      }
+    ],
+    "expected_answer": "Staff Costs per year: 6 group(s) — see expected_rows."
+  },
+  {
+    "id": "q058",
+    "category": "groupby",
+    "question": "What is the average amount approved per donor type?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT donor_type, AVG(amount_approved_chf) AS avg_approved_chf FROM grant_applications WHERE amount_approved_chf IS NOT NULL GROUP BY donor_type;",
+    "expected_rows": [
+      {
+        "donor_type": "Government",
+        "avg_approved_chf": 437059.3220338983
+      },
+      {
+        "donor_type": "Multilateral",
+        "avg_approved_chf": 499395.8333333333
+      },
+      {
+        "donor_type": "NGO",
+        "avg_approved_chf": 476456.8965517241
+      },
+      {
+        "donor_type": "Private",
+        "avg_approved_chf": 468990.1960784314
+      }
+    ],
+    "expected_answer": "Average approved per donor type: 4 group(s) — see expected_rows."
+  },
+  {
+    "id": "q059",
+    "category": "groupby",
+    "question": "What is the average beneficiaries target per region?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT region, AVG(beneficiaries_target) AS avg_beneficiaries FROM projects GROUP BY region;",
+    "expected_rows": [
+      {
+        "region": "Asia & Pacific",
+        "avg_beneficiaries": 11024.2941176471
+      },
+      {
+        "region": "East Africa",
+        "avg_beneficiaries": 9671.4222222222
+      },
+      {
+        "region": "Eastern Europe",
+        "avg_beneficiaries": 10892.2592592593
+      },
+      {
+        "region": "Latin America & Caribbean",
+        "avg_beneficiaries": 9424.0
+      },
+      {
+        "region": "Middle East & North Africa",
+        "avg_beneficiaries": 19921.8928571429
+      },
+      {
+        "region": "Sahel",
+        "avg_beneficiaries": 21180.2553191489
+      },
+      {
+        "region": "Southern Africa",
+        "avg_beneficiaries": 8887.3636363636
+      },
+      {
+        "region": "West Africa",
+        "avg_beneficiaries": 11085.88
+      }
+    ],
+    "expected_answer": "Average beneficiaries target per region: 8 group(s) — see expected_rows."
+  },
+  {
+    "id": "q060",
+    "category": "groupby",
+    "question": "How many projects are there per project status?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT project_status, COUNT(*) AS n FROM projects GROUP BY project_status;",
+    "expected_rows": [
+      {
+        "project_status": "Active",
+        "n": 168
+      },
+      {
+        "project_status": "Cancelled",
+        "n": 27
+      },
+      {
+        "project_status": "Closed",
+        "n": 35
+      },
+      {
+        "project_status": "Completed",
+        "n": 20
+      },
+      {
+        "project_status": "Idea",
+        "n": 15
+      },
+      {
+        "project_status": "Pipeline",
+        "n": 13
+      },
+      {
+        "project_status": "Preparation",
+        "n": 18
+      }
+    ],
+    "expected_answer": "Projects per status: 7 group(s) — see expected_rows."
+  },
+  {
+    "id": "q061",
+    "category": "groupby",
+    "question": "What is the total approved amount per donor type for grants on Climate projects?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT g.donor_type, SUM(g.amount_approved_chf) AS total_approved_chf FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.theme = 'Climate' GROUP BY g.donor_type;",
+    "expected_rows": [
+      {
+        "donor_type": "Government",
+        "total_approved_chf": 7039000.0
+      },
+      {
+        "donor_type": "Multilateral",
+        "total_approved_chf": 4987000.0
+      },
+      {
+        "donor_type": "NGO",
+        "total_approved_chf": 5469000.0
+      },
+      {
+        "donor_type": "Private",
+        "total_approved_chf": 5932000.0
+      }
+    ],
+    "expected_answer": "Approved per donor type (Climate projects): 4 group(s) — see expected_rows."
+  },
+  {
+    "id": "q062",
+    "category": "groupby",
+    "question": "What is the number of grant applications per donor country for Yemen projects?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT g.donor_country, COUNT(*) AS n FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.country = 'Yemen' GROUP BY g.donor_country;",
+    "expected_rows": [
+      {
+        "donor_country": "DE",
+        "n": 1
+      },
+      {
+        "donor_country": "FR",
+        "n": 3
+      },
+      {
+        "donor_country": "INT",
+        "n": 2
+      },
+      {
+        "donor_country": "IT",
+        "n": 1
+      },
+      {
+        "donor_country": "NO",
+        "n": 1
+      },
+      {
+        "donor_country": "UN",
+        "n": 2
+      },
+      {
+        "donor_country": "US",
+        "n": 2
+      }
+    ],
+    "expected_answer": "Applications per donor country (Yemen): 7 group(s) — see expected_rows."
+  },
+  {
+    "id": "q063",
+    "category": "groupby",
+    "question": "What is the total amount approved per region (across all grants)?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT p.region, SUM(g.amount_approved_chf) AS total_approved_chf FROM grant_applications g JOIN projects p ON p.project_id = g.project_id GROUP BY p.region;",
+    "expected_rows": [
+      {
+        "region": "Asia & Pacific",
+        "total_approved_chf": 36346000.0
+      },
+      {
+        "region": "East Africa",
+        "total_approved_chf": 24866000.0
+      },
+      {
+        "region": "Eastern Europe",
+        "total_approved_chf": 17197000.0
+      },
+      {
+        "region": "Latin America & Caribbean",
+        "total_approved_chf": 40941000.0
+      },
+      {
+        "region": "Middle East & North Africa",
+        "total_approved_chf": 15940000.0
+      },
+      {
+        "region": "Sahel",
+        "total_approved_chf": 37597000.0
+      },
+      {
+        "region": "Southern Africa",
+        "total_approved_chf": 18056000.0
+      },
+      {
+        "region": "West Africa",
+        "total_approved_chf": 11678000.0
+      }
+    ],
+    "expected_answer": "Total approved per region: 8 group(s) — see expected_rows."
+  },
+  {
+    "id": "q064",
+    "category": "groupby",
+    "question": "What is the number of in-progress grants per region?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT p.region, COUNT(*) AS n FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE g.grant_status = 'in_progress' GROUP BY p.region;",
+    "expected_rows": [
+      {
+        "region": "Asia & Pacific",
+        "n": 28
+      },
+      {
+        "region": "East Africa",
+        "n": 23
+      },
+      {
+        "region": "Eastern Europe",
+        "n": 18
+      },
+      {
+        "region": "Latin America & Caribbean",
+        "n": 38
+      },
+      {
+        "region": "Middle East & North Africa",
+        "n": 21
+      },
+      {
+        "region": "Sahel",
+        "n": 33
+      },
+      {
+        "region": "Southern Africa",
+        "n": 16
+      },
+      {
+        "region": "West Africa",
+        "n": 17
+      }
+    ],
+    "expected_answer": "In-progress grants per region: 8 group(s) — see expected_rows."
+  },
+  {
+    "id": "q065",
+    "category": "groupby",
+    "question": "What is the total project cost per lead partner?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT p.lead_partner, SUM(ba.amount_chf) AS total_costs_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE ba.budget_line = 'Total project costs' GROUP BY p.lead_partner;",
+    "expected_rows": [
+      {
+        "lead_partner": "Caritas Switzerland",
+        "total_costs_chf": 197633000
+      },
+      {
+        "lead_partner": "Government Agency",
+        "total_costs_chf": 244372000
+      },
+      {
+        "lead_partner": "Local NGO",
+        "total_costs_chf": 363697000
+      },
+      {
+        "lead_partner": "Research Institute",
+        "total_costs_chf": 226201000
+      },
+      {
+        "lead_partner": "UN Agency",
+        "total_costs_chf": 233348000
+      }
+    ],
+    "expected_answer": "Total project costs per lead partner: 5 group(s) — see expected_rows."
+  },
+  {
+    "id": "q066",
+    "category": "funding_gap",
+    "question": "What is the total funding gap for project P001?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(CASE WHEN budget_line IN ('Total project costs','Indirect Costs') THEN amount_chf ELSE 0 END) - SUM(CASE WHEN budget_line IN ('Total income','Co-financing') THEN amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals WHERE project_id = 'P001';",
+    "expected_rows": [
+      {
+        "funding_gap_chf": 2224000
+      }
+    ],
+    "expected_answer": "Funding gap for P001: 2,224,000 CHF."
+  },
+  {
+    "id": "q067",
+    "category": "funding_gap",
+    "question": "What is the total funding gap for project P002?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(CASE WHEN budget_line IN ('Total project costs','Indirect Costs') THEN amount_chf ELSE 0 END) - SUM(CASE WHEN budget_line IN ('Total income','Co-financing') THEN amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals WHERE project_id = 'P002';",
+    "expected_rows": [
+      {
+        "funding_gap_chf": null
+      }
+    ],
+    "expected_answer": "Funding gap for P002: 0 CHF."
+  },
+  {
+    "id": "q068",
+    "category": "funding_gap",
+    "question": "What is the total funding gap for project P003?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(CASE WHEN budget_line IN ('Total project costs','Indirect Costs') THEN amount_chf ELSE 0 END) - SUM(CASE WHEN budget_line IN ('Total income','Co-financing') THEN amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals WHERE project_id = 'P003';",
+    "expected_rows": [
+      {
+        "funding_gap_chf": 2361000
+      }
+    ],
+    "expected_answer": "Funding gap for P003: 2,361,000 CHF."
+  },
+  {
+    "id": "q069",
+    "category": "funding_gap",
+    "question": "What is the total funding gap across all projects?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(CASE WHEN budget_line IN ('Total project costs','Indirect Costs') THEN amount_chf ELSE 0 END) - SUM(CASE WHEN budget_line IN ('Total income','Co-financing') THEN amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals;",
+    "expected_rows": [
+      {
+        "funding_gap_chf": 347015000
+      }
+    ],
+    "expected_answer": "Total funding gap (all projects): 347,015,000 CHF."
+  },
+  {
+    "id": "q070",
+    "category": "funding_gap",
+    "question": "What is the total funding gap across active projects?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(CASE WHEN ba.budget_line IN ('Total project costs','Indirect Costs') THEN ba.amount_chf ELSE 0 END) - SUM(CASE WHEN ba.budget_line IN ('Total income','Co-financing') THEN ba.amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.is_active = 1;",
+    "expected_rows": [
+      {
+        "funding_gap_chf": 196452000
+      }
+    ],
+    "expected_answer": "Funding gap (active projects): 196,452,000 CHF."
+  },
+  {
+    "id": "q071",
+    "category": "funding_gap",
+    "question": "What is the total funding gap for projects in the East Africa region?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(CASE WHEN ba.budget_line IN ('Total project costs','Indirect Costs') THEN ba.amount_chf ELSE 0 END) - SUM(CASE WHEN ba.budget_line IN ('Total income','Co-financing') THEN ba.amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.region = 'East Africa';",
+    "expected_rows": [
+      {
+        "funding_gap_chf": 39384000
+      }
+    ],
+    "expected_answer": "Funding gap (East Africa): 39,384,000 CHF."
+  },
+  {
+    "id": "q072",
+    "category": "funding_gap",
+    "question": "What is the total funding gap for projects in the Sahel region?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(CASE WHEN ba.budget_line IN ('Total project costs','Indirect Costs') THEN ba.amount_chf ELSE 0 END) - SUM(CASE WHEN ba.budget_line IN ('Total income','Co-financing') THEN ba.amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.region = 'Sahel';",
+    "expected_rows": [
+      {
+        "funding_gap_chf": 59550000
+      }
+    ],
+    "expected_answer": "Funding gap (Sahel): 59,550,000 CHF."
+  },
+  {
+    "id": "q073",
+    "category": "funding_gap",
+    "question": "What is the total funding gap for Climate-theme projects?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(CASE WHEN ba.budget_line IN ('Total project costs','Indirect Costs') THEN ba.amount_chf ELSE 0 END) - SUM(CASE WHEN ba.budget_line IN ('Total income','Co-financing') THEN ba.amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.theme = 'Climate';",
+    "expected_rows": [
+      {
+        "funding_gap_chf": 33833000
+      }
+    ],
+    "expected_answer": "Funding gap (Climate projects): 33,833,000 CHF."
+  },
+  {
+    "id": "q074",
+    "category": "funding_gap",
+    "question": "What is the total funding gap for Humanitarian Aid projects?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(CASE WHEN ba.budget_line IN ('Total project costs','Indirect Costs') THEN ba.amount_chf ELSE 0 END) - SUM(CASE WHEN ba.budget_line IN ('Total income','Co-financing') THEN ba.amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.theme = 'Humanitarian Aid';",
+    "expected_rows": [
+      {
+        "funding_gap_chf": 150559000
+      }
+    ],
+    "expected_answer": "Funding gap (Humanitarian Aid): 150,559,000 CHF."
+  },
+  {
+    "id": "q075",
+    "category": "funding_gap",
+    "question": "What is the total funding gap for Migration-theme projects?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(CASE WHEN ba.budget_line IN ('Total project costs','Indirect Costs') THEN ba.amount_chf ELSE 0 END) - SUM(CASE WHEN ba.budget_line IN ('Total income','Co-financing') THEN ba.amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE p.theme = 'Migration';",
+    "expected_rows": [
+      {
+        "funding_gap_chf": 37957000
+      }
+    ],
+    "expected_answer": "Funding gap (Migration projects): 37,957,000 CHF."
+  },
+  {
+    "id": "q076",
+    "category": "funding_gap",
+    "question": "What is the total funding gap in fiscal year 2023?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(CASE WHEN budget_line IN ('Total project costs','Indirect Costs') THEN amount_chf ELSE 0 END) - SUM(CASE WHEN budget_line IN ('Total income','Co-financing') THEN amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals WHERE fiscal_year = 2023;",
+    "expected_rows": [
+      {
+        "funding_gap_chf": 69229000
+      }
+    ],
+    "expected_answer": "Funding gap (2023): 69,229,000 CHF."
+  },
+  {
+    "id": "q077",
+    "category": "funding_gap",
+    "question": "What is the total funding gap in fiscal year 2024?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT SUM(CASE WHEN budget_line IN ('Total project costs','Indirect Costs') THEN amount_chf ELSE 0 END) - SUM(CASE WHEN budget_line IN ('Total income','Co-financing') THEN amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals WHERE fiscal_year = 2024;",
+    "expected_rows": [
+      {
+        "funding_gap_chf": 55353000
+      }
+    ],
+    "expected_answer": "Funding gap (2024): 55,353,000 CHF."
+  },
+  {
+    "id": "q078",
+    "category": "groupby",
+    "question": "What is the funding gap per region?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT p.region, SUM(CASE WHEN ba.budget_line IN ('Total project costs','Indirect Costs') THEN ba.amount_chf ELSE 0 END) - SUM(CASE WHEN ba.budget_line IN ('Total income','Co-financing') THEN ba.amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id GROUP BY p.region;",
+    "expected_rows": [
+      {
+        "region": "Asia & Pacific",
+        "funding_gap_chf": 53581000
+      },
+      {
+        "region": "East Africa",
+        "funding_gap_chf": 39384000
+      },
+      {
+        "region": "Eastern Europe",
+        "funding_gap_chf": 30691000
+      },
+      {
+        "region": "Latin America & Caribbean",
+        "funding_gap_chf": 62950000
+      },
+      {
+        "region": "Middle East & North Africa",
+        "funding_gap_chf": 44944000
+      },
+      {
+        "region": "Sahel",
+        "funding_gap_chf": 59550000
+      },
+      {
+        "region": "Southern Africa",
+        "funding_gap_chf": 30089000
+      },
+      {
+        "region": "West Africa",
+        "funding_gap_chf": 25826000
+      }
+    ],
+    "expected_answer": "Funding gap per region: 8 group(s) — see expected_rows."
+  },
+  {
+    "id": "q079",
+    "category": "groupby",
+    "question": "What is the funding gap per theme?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT p.theme, SUM(CASE WHEN ba.budget_line IN ('Total project costs','Indirect Costs') THEN ba.amount_chf ELSE 0 END) - SUM(CASE WHEN ba.budget_line IN ('Total income','Co-financing') THEN ba.amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id GROUP BY p.theme;",
+    "expected_rows": [
+      {
+        "theme": "Climate",
+        "funding_gap_chf": 33833000
+      },
+      {
+        "theme": "Humanitarian Aid",
+        "funding_gap_chf": 150559000
+      },
+      {
+        "theme": "Income",
+        "funding_gap_chf": 124666000
+      },
+      {
+        "theme": "Migration",
+        "funding_gap_chf": 37957000
+      }
+    ],
+    "expected_answer": "Funding gap per theme: 4 group(s) — see expected_rows."
+  },
+  {
+    "id": "q080",
+    "category": "groupby",
+    "question": "What is the funding gap per fiscal year?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT fiscal_year, SUM(CASE WHEN budget_line IN ('Total project costs','Indirect Costs') THEN amount_chf ELSE 0 END) - SUM(CASE WHEN budget_line IN ('Total income','Co-financing') THEN amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals GROUP BY fiscal_year;",
+    "expected_rows": [
+      {
+        "fiscal_year": 2019,
+        "funding_gap_chf": 18038000
+      },
+      {
+        "fiscal_year": 2020,
+        "funding_gap_chf": 65857000
+      },
+      {
+        "fiscal_year": 2021,
+        "funding_gap_chf": 66642000
+      },
+      {
+        "fiscal_year": 2022,
+        "funding_gap_chf": 71896000
+      },
+      {
+        "fiscal_year": 2023,
+        "funding_gap_chf": 69229000
+      },
+      {
+        "fiscal_year": 2024,
+        "funding_gap_chf": 55353000
+      }
+    ],
+    "expected_answer": "Funding gap per year: 6 group(s) — see expected_rows."
+  },
+  {
+    "id": "q081",
+    "category": "topn",
+    "question": "What are the top 5 donors by total approved amount across successful grants?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT donor_name, SUM(amount_approved_chf) AS total_approved_chf FROM grant_applications WHERE grant_status = 'successful' GROUP BY donor_name ORDER BY total_approved_chf DESC LIMIT 5;",
+    "expected_rows": [
+      {
+        "donor_name": "Caritas Germany",
+        "total_approved_chf": 9803000.0
+      },
+      {
+        "donor_name": "Fondation Medicor",
+        "total_approved_chf": 8132000.0
+      },
+      {
+        "donor_name": "Caritas Italy",
+        "total_approved_chf": 6189000.0
+      },
+      {
+        "donor_name": "AFD (France)",
+        "total_approved_chf": 5950000.0
+      },
+      {
+        "donor_name": "AICS (Italy)",
+        "total_approved_chf": 5704000.0
+      }
+    ],
+    "expected_answer": "Top 5 donors by approved amount (top 5 rows in expected_rows)."
+  },
+  {
+    "id": "q082",
+    "category": "topn",
+    "question": "What are the top 3 regions by total project costs?",
+    "tables": [
+      "projects",
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT p.region, SUM(ba.amount_chf) AS total_costs_chf FROM budget_actuals ba JOIN projects p ON p.project_id = ba.project_id WHERE ba.budget_line = 'Total project costs' GROUP BY p.region ORDER BY total_costs_chf DESC LIMIT 3;",
+    "expected_rows": [
+      {
+        "region": "Latin America & Caribbean",
+        "total_costs_chf": 221324000
+      },
+      {
+        "region": "Sahel",
+        "total_costs_chf": 214286000
+      },
+      {
+        "region": "Asia & Pacific",
+        "total_costs_chf": 204891000
+      }
+    ],
+    "expected_answer": "Top 3 regions by project costs (top 3 rows in expected_rows)."
+  },
+  {
+    "id": "q083",
+    "category": "topn",
+    "question": "Which 5 projects have the largest total project costs?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT project_id, SUM(amount_chf) AS total_costs_chf FROM budget_actuals WHERE budget_line = 'Total project costs' GROUP BY project_id ORDER BY total_costs_chf DESC LIMIT 5;",
+    "expected_rows": [
+      {
+        "project_id": "P119",
+        "total_costs_chf": 13108000
+      },
+      {
+        "project_id": "P145",
+        "total_costs_chf": 12735000
+      },
+      {
+        "project_id": "P111",
+        "total_costs_chf": 12446000
+      },
+      {
+        "project_id": "P141",
+        "total_costs_chf": 12303000
+      },
+      {
+        "project_id": "P023",
+        "total_costs_chf": 12061000
+      }
+    ],
+    "expected_answer": "Top 5 projects by total costs (top 5 rows in expected_rows)."
+  },
+  {
+    "id": "q084",
+    "category": "topn",
+    "question": "Which 5 projects have the largest beneficiaries target?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT project_id, project_name, beneficiaries_target FROM projects ORDER BY beneficiaries_target DESC LIMIT 5;",
+    "expected_rows": [
+      {
+        "project_id": "P029",
+        "project_name": "Food Security Northeast Nigeria",
+        "beneficiaries_target": 39863
+      },
+      {
+        "project_id": "P146",
+        "project_name": "WASH Niger",
+        "beneficiaries_target": 39384
+      },
+      {
+        "project_id": "P141",
+        "project_name": "Livelihood Chad",
+        "beneficiaries_target": 39283
+      },
+      {
+        "project_id": "P238",
+        "project_name": "Food Security Yemen",
+        "beneficiaries_target": 38990
+      },
+      {
+        "project_id": "P075",
+        "project_name": "Rural Livelihoods Mali",
+        "beneficiaries_target": 38282
+      }
+    ],
+    "expected_answer": "Top 5 projects by beneficiaries target (top 5 rows in expected_rows)."
+  },
+  {
+    "id": "q085",
+    "category": "topn",
+    "question": "What are the top 5 grant applications by amount requested?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT grant_id, donor_name, amount_requested_chf FROM grant_applications ORDER BY amount_requested_chf DESC LIMIT 5;",
+    "expected_rows": [
+      {
+        "grant_id": "PQ-2023-0023",
+        "donor_name": "UNHCR",
+        "amount_requested_chf": 1498000
+      },
+      {
+        "grant_id": "PQ-2020-0048",
+        "donor_name": "Global Fund",
+        "amount_requested_chf": 1495000
+      },
+      {
+        "grant_id": "PQ-2024-0055",
+        "donor_name": "Caritas Austria",
+        "amount_requested_chf": 1484000
+      },
+      {
+        "grant_id": "PQ-2022-0031",
+        "donor_name": "Global Fund",
+        "amount_requested_chf": 1483000
+      },
+      {
+        "grant_id": "PQ-2024-0026",
+        "donor_name": "African Development Bank",
+        "amount_requested_chf": 1481000
+      }
+    ],
+    "expected_answer": "Top 5 grants by amount requested (top 5 rows in expected_rows)."
+  },
+  {
+    "id": "q086",
+    "category": "topn",
+    "question": "Which 5 projects have the largest funding gap?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT project_id, SUM(CASE WHEN budget_line IN ('Total project costs','Indirect Costs') THEN amount_chf ELSE 0 END) - SUM(CASE WHEN budget_line IN ('Total income','Co-financing') THEN amount_chf ELSE 0 END) AS funding_gap_chf FROM budget_actuals GROUP BY project_id ORDER BY funding_gap_chf DESC LIMIT 5;",
+    "expected_rows": [
+      {
+        "project_id": "P119",
+        "funding_gap_chf": 5460000
+      },
+      {
+        "project_id": "P145",
+        "funding_gap_chf": 5140000
+      },
+      {
+        "project_id": "P142",
+        "funding_gap_chf": 5137000
+      },
+      {
+        "project_id": "P111",
+        "funding_gap_chf": 4918000
+      },
+      {
+        "project_id": "P022",
+        "funding_gap_chf": 4460000
+      }
+    ],
+    "expected_answer": "Top 5 projects by funding gap (top 5 rows in expected_rows)."
+  },
+  {
+    "id": "q087",
+    "category": "topn",
+    "question": "What are the top 3 themes by total approved grant amount?",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT p.theme, SUM(g.amount_approved_chf) AS total_approved_chf FROM grant_applications g JOIN projects p ON p.project_id = g.project_id GROUP BY p.theme ORDER BY total_approved_chf DESC LIMIT 3;",
+    "expected_rows": [
+      {
+        "theme": "Humanitarian Aid",
+        "total_approved_chf": 85434000.0
+      },
+      {
+        "theme": "Income",
+        "total_approved_chf": 74055000.0
+      },
+      {
+        "theme": "Climate",
+        "total_approved_chf": 23427000.0
+      }
+    ],
+    "expected_answer": "Top 3 themes by total approved (top 3 rows in expected_rows)."
+  },
+  {
+    "id": "q088",
+    "category": "topn",
+    "question": "What are the top 5 donors by number of applications?",
+    "tables": [
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT donor_name, COUNT(*) AS n FROM grant_applications GROUP BY donor_name ORDER BY n DESC LIMIT 5;",
+    "expected_rows": [
+      {
+        "donor_name": "Caritas Germany",
+        "n": 27
+      },
+      {
+        "donor_name": "Caritas Italy",
+        "n": 22
+      },
+      {
+        "donor_name": "WFP",
+        "n": 21
+      },
+      {
+        "donor_name": "AICS (Italy)",
+        "n": 21
+      },
+      {
+        "donor_name": "Fondation Medicor",
+        "n": 20
+      }
+    ],
+    "expected_answer": "Top 5 donors by application count (top 5 rows in expected_rows)."
+  },
+  {
+    "id": "q089",
+    "category": "topn",
+    "question": "Which 5 countries have the most projects?",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT country, COUNT(*) AS n FROM projects GROUP BY country ORDER BY n DESC LIMIT 5;",
+    "expected_rows": [
+      {
+        "country": "Niger",
+        "n": 8
+      },
+      {
+        "country": "South Sudan",
+        "n": 7
+      },
+      {
+        "country": "Mali",
+        "n": 7
+      },
+      {
+        "country": "Ethiopia",
+        "n": 7
+      },
+      {
+        "country": "Chad",
+        "n": 7
+      }
+    ],
+    "expected_answer": "Top 5 countries by project count (top 5 rows in expected_rows)."
+  },
+  {
+    "id": "q090",
+    "category": "topn",
+    "question": "Which 3 fiscal years had the largest total project costs?",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT fiscal_year, SUM(amount_chf) AS total_costs_chf FROM budget_actuals WHERE budget_line = 'Total project costs' GROUP BY fiscal_year ORDER BY total_costs_chf DESC LIMIT 3;",
+    "expected_rows": [
+      {
+        "fiscal_year": 2022,
+        "total_costs_chf": 262668000
+      },
+      {
+        "fiscal_year": 2023,
+        "total_costs_chf": 251162000
+      },
+      {
+        "fiscal_year": 2021,
+        "total_costs_chf": 248498000
+      }
+    ],
+    "expected_answer": "Top 3 years by total project costs (top 3 rows in expected_rows)."
+  },
+  {
+    "id": "q091",
+    "category": "listing",
+    "question": "List all grant applications for projects in Yemen with their donor name and status.",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT g.grant_id, g.donor_name, g.grant_status FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.country = 'Yemen';",
+    "expected_rows": [
+      {
+        "grant_id": "PQ-2021-0008",
+        "donor_name": "AFD (France)",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2020-0058",
+        "donor_name": "OCHA",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2020-0060",
+        "donor_name": "Misereor",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2023-0059",
+        "donor_name": "Aga Khan Foundation",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2024-0061",
+        "donor_name": "Global Fund",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2020-0566",
+        "donor_name": "Bill & Melinda Gates Foundation",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2021-0564",
+        "donor_name": "Norad (Norway)",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2022-0565",
+        "donor_name": "AICS (Italy)",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2023-0606",
+        "donor_name": "AFD (France)",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2023-0607",
+        "donor_name": "Bill & Melinda Gates Foundation",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2021-0695",
+        "donor_name": "Caritas France (Secours Catholique)",
+        "grant_status": "unsuccessful"
+      },
+      {
+        "grant_id": "PQ-2023-0694",
+        "donor_name": "UNDP",
+        "grant_status": "in_progress"
+      }
+    ],
+    "expected_answer": "Found 12 grant application(s) for Yemen projects (see expected_rows for details)."
+  },
+  {
+    "id": "q092",
+    "category": "listing",
+    "question": "List all grant applications for active Climate-theme projects with donor and status.",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT g.grant_id, g.donor_name, g.grant_status FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.theme = 'Climate' AND p.is_active = 1;",
+    "expected_rows": [
+      {
+        "grant_id": "PQ-2021-0025",
+        "donor_name": "EU Humanitarian Aid (ECHO)",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2023-0023",
+        "donor_name": "UNHCR",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2023-0024",
+        "donor_name": "Caritas Germany",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2024-0022",
+        "donor_name": "UNHCR",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2020-0046",
+        "donor_name": "Global Fund",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2020-0048",
+        "donor_name": "Global Fund",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2020-0049",
+        "donor_name": "FCDO (UK)",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2021-0047",
+        "donor_name": "AFD (France)",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2021-0050",
+        "donor_name": "Jacobs Foundation",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2020-0135",
+        "donor_name": "WFP",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2021-0136",
+        "donor_name": "Caritas Germany",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2022-0134",
+        "donor_name": "Asian Development Bank",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2021-0234",
+        "donor_name": "Caritas Austria",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2022-0236",
+        "donor_name": "Misereor",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2022-0237",
+        "donor_name": "BMZ (German Federal Ministry)",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2023-0235",
+        "donor_name": "Ford Foundation",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2024-0233",
+        "donor_name": "CAFOD",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2020-0254",
+        "donor_name": "WFP",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2023-0253",
+        "donor_name": "Islamic Development Bank",
+        "grant_status": "cancelled"
+      },
+      {
+        "grant_id": "PQ-2020-0290",
+        "donor_name": "Bill & Melinda Gates Foundation",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2022-0292",
+        "donor_name": "EU Humanitarian Aid (ECHO)",
+        "grant_status": "unsuccessful"
+      },
+      {
+        "grant_id": "PQ-2023-0291",
+        "donor_name": "Helvetas",
+        "grant_status": "cancelled"
+      },
+      {
+        "grant_id": "PQ-2024-0289",
+        "donor_name": "Danida (Denmark)",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2020-0369",
+        "donor_name": "Caritas Italy",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2024-0370",
+        "donor_name": "Arcadia Fund",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2024-0371",
+        "donor_name": "Norad (Norway)",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2020-0399",
+        "donor_name": "Jacobs Foundation",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2024-0433",
+        "donor_name": "Catholic Relief Services (CRS)",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2020-0467",
+        "donor_name": "UNICEF",
+        "grant_status": "unsuccessful"
+      },
+      {
+        "grant_id": "PQ-2020-0468",
+        "donor_name": "Ford Foundation",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2020-0469",
+        "donor_name": "Terre des Hommes",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2020-0480",
+        "donor_name": "Aga Khan Foundation",
+        "grant_status": "cancelled"
+      },
+      {
+        "grant_id": "PQ-2022-0478",
+        "donor_name": "Fondation Medicor",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2023-0479",
+        "donor_name": "Terre des Hommes",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2023-0481",
+        "donor_name": "Terre des Hommes",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2020-0499",
+        "donor_name": "Swiss Federal Chancellery",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2020-0502",
+        "donor_name": "Bill & Melinda Gates Foundation",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2020-0503",
+        "donor_name": "OCHA",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2022-0504",
+        "donor_name": "SDC",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2022-0505",
+        "donor_name": "JICA (Japan)",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2024-0506",
+        "donor_name": "SECO",
+        "grant_status": "unsuccessful"
+      },
+      {
+        "grant_id": "PQ-2020-0557",
+        "donor_name": "UNICEF",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2022-0556",
+        "donor_name": "Caritas Italy",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2023-0555",
+        "donor_name": "Arcadia Fund",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2023-0558",
+        "donor_name": "World Bank",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2020-0611",
+        "donor_name": "Aga Khan Foundation",
+        "grant_status": "in_progress"
+      },
+      {
+        "grant_id": "PQ-2020-0613",
+        "donor_name": "AICS (Italy)",
+        "grant_status": "unsuccessful"
+      },
+      {
+        "grant_id": "PQ-2023-0610",
+        "donor_name": "Ford Foundation",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2023-0612",
+        "donor_name": "Caritas Austria",
+        "grant_status": "unsuccessful"
+      },
+      {
+        "grant_id": "PQ-2020-0615",
+        "donor_name": "Bread for the World",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2021-0616",
+        "donor_name": "Caritas France (Secours Catholique)",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2022-0617",
+        "donor_name": "Norad (Norway)",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2022-0619",
+        "donor_name": "Caritas Germany",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2023-0618",
+        "donor_name": "Open Society Foundations",
+        "grant_status": "cancelled"
+      },
+      {
+        "grant_id": "PQ-2020-0673",
+        "donor_name": "Caritas Italy",
+        "grant_status": "successful"
+      },
+      {
+        "grant_id": "PQ-2020-0716",
+        "donor_name": "Jacobs Foundation",
+        "grant_status": "cancelled"
+      },
+      {
+        "grant_id": "PQ-2021-0715",
+        "donor_name": "Fondation Medicor",
+        "grant_status": "successful"
+      }
+    ],
+    "expected_answer": "Found 57 grant application(s) for active Climate projects."
+  },
+  {
+    "id": "q093",
+    "category": "listing",
+    "question": "List the projects in Burundi together with their lead partner.",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT project_id, project_name, lead_partner FROM projects WHERE country = 'Burundi';",
+    "expected_rows": [
+      {
+        "project_id": "P004",
+        "project_name": "WASH Burundi",
+        "lead_partner": "Local NGO"
+      },
+      {
+        "project_id": "P047",
+        "project_name": "Food Security Burundi",
+        "lead_partner": "UN Agency"
+      },
+      {
+        "project_id": "P079",
+        "project_name": "Displacement Burundi",
+        "lead_partner": "Research Institute"
+      },
+      {
+        "project_id": "P105",
+        "project_name": "Women Empowerment Burundi",
+        "lead_partner": "Research Institute"
+      }
+    ],
+    "expected_answer": "Found 4 project(s) in Burundi."
+  },
+  {
+    "id": "q094",
+    "category": "listing",
+    "question": "List all in-progress grants for projects in the East Africa region.",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT g.grant_id, g.donor_name, p.project_id, p.country FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE p.region = 'East Africa' AND g.grant_status = 'in_progress';",
+    "expected_rows": [
+      {
+        "grant_id": "PQ-2024-0010",
+        "donor_name": "Swiss Federal Chancellery",
+        "project_id": "P004",
+        "country": "Burundi"
+      },
+      {
+        "grant_id": "PQ-2024-0090",
+        "donor_name": "Open Society Foundations",
+        "project_id": "P035",
+        "country": "South Sudan"
+      },
+      {
+        "grant_id": "PQ-2024-0100",
+        "donor_name": "Catholic Relief Services (CRS)",
+        "project_id": "P040",
+        "country": "Tanzania"
+      },
+      {
+        "grant_id": "PQ-2023-0196",
+        "donor_name": "Arcadia Fund",
+        "project_id": "P079",
+        "country": "Burundi"
+      },
+      {
+        "grant_id": "PQ-2024-0230",
+        "donor_name": "Wellcome Trust",
+        "project_id": "P093",
+        "country": "Kenya"
+      },
+      {
+        "grant_id": "PQ-2020-0261",
+        "donor_name": "UNHCR",
+        "project_id": "P105",
+        "country": "Burundi"
+      },
+      {
+        "grant_id": "PQ-2021-0262",
+        "donor_name": "Terre des Hommes",
+        "project_id": "P106",
+        "country": "Rwanda"
+      },
+      {
+        "grant_id": "PQ-2023-0263",
+        "donor_name": "EU Humanitarian Aid (ECHO)",
+        "project_id": "P106",
+        "country": "Rwanda"
+      },
+      {
+        "grant_id": "PQ-2021-0264",
+        "donor_name": "AFD (France)",
+        "project_id": "P106",
+        "country": "Rwanda"
+      },
+      {
+        "grant_id": "PQ-2024-0388",
+        "donor_name": "USAID",
+        "project_id": "P152",
+        "country": "DRC"
+      },
+      {
+        "grant_id": "PQ-2023-0429",
+        "donor_name": "Caritas Austria",
+        "project_id": "P165",
+        "country": "South Sudan"
+      },
+      {
+        "grant_id": "PQ-2024-0470",
+        "donor_name": "Oxfam",
+        "project_id": "P185",
+        "country": "Uganda"
+      },
+      {
+        "grant_id": "PQ-2023-0471",
+        "donor_name": "Asian Development Bank",
+        "project_id": "P185",
+        "country": "Uganda"
+      },
+      {
+        "grant_id": "PQ-2024-0523",
+        "donor_name": "BMZ (German Federal Ministry)",
+        "project_id": "P205",
+        "country": "Kenya"
+      },
+      {
+        "grant_id": "PQ-2021-0548",
+        "donor_name": "JICA (Japan)",
+        "project_id": "P213",
+        "country": "Rwanda"
+      },
+      {
+        "grant_id": "PQ-2020-0563",
+        "donor_name": "Green Climate Fund",
+        "project_id": "P218",
+        "country": "DRC"
+      },
+      {
+        "grant_id": "PQ-2024-0567",
+        "donor_name": "UNICEF",
+        "project_id": "P220",
+        "country": "Kenya"
+      },
+      {
+        "grant_id": "PQ-2023-0568",
+        "donor_name": "AICS (Italy)",
+        "project_id": "P220",
+        "country": "Kenya"
+      },
+      {
+        "grant_id": "PQ-2023-0569",
+        "donor_name": "GIZ",
+        "project_id": "P220",
+        "country": "Kenya"
+      },
+      {
+        "grant_id": "PQ-2023-0570",
+        "donor_name": "SECO",
+        "project_id": "P221",
+        "country": "Ethiopia"
+      },
+      {
+        "grant_id": "PQ-2024-0575",
+        "donor_name": "SIDA (Sweden)",
+        "project_id": "P223",
+        "country": "Rwanda"
+      },
+      {
+        "grant_id": "PQ-2024-0609",
+        "donor_name": "EU Humanitarian Aid (ECHO)",
+        "project_id": "P239",
+        "country": "Kenya"
+      },
+      {
+        "grant_id": "PQ-2022-0751",
+        "donor_name": "Caritas Italy",
+        "project_id": "P296",
+        "country": "Ethiopia"
+      }
+    ],
+    "expected_answer": "Found 23 in-progress grant(s) for East Africa projects."
+  },
+  {
+    "id": "q095",
+    "category": "listing",
+    "question": "List the cost sub-categories for project P001 in 2023.",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT sub_category, amount_chf FROM budget_actuals WHERE project_id = 'P001' AND budget_line = 'Total project costs' AND fiscal_year = 2023;",
+    "expected_rows": [
+      {
+        "sub_category": "Training & Capacity",
+        "amount_chf": 116000
+      },
+      {
+        "sub_category": "Monitoring & Evaluation",
+        "amount_chf": 101000
+      },
+      {
+        "sub_category": "Operational Costs",
+        "amount_chf": 256000
+      },
+      {
+        "sub_category": "Partner Costs",
+        "amount_chf": 287000
+      },
+      {
+        "sub_category": "Equipment & Supplies",
+        "amount_chf": 111000
+      },
+      {
+        "sub_category": "Staff Costs",
+        "amount_chf": 344000
+      }
+    ],
+    "expected_answer": "Found 6 cost sub-categor(y/ies) for P001 in 2023."
+  },
+  {
+    "id": "q096",
+    "category": "listing",
+    "question": "List the income sub-categories for project P001 in 2023.",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT sub_category, amount_chf FROM budget_actuals WHERE project_id = 'P001' AND budget_line = 'Total income' AND fiscal_year = 2023;",
+    "expected_rows": [
+      {
+        "sub_category": "Own Funds / Reserves",
+        "amount_chf": 61000
+      },
+      {
+        "sub_category": "SDC Contribution",
+        "amount_chf": 394000
+      },
+      {
+        "sub_category": "Private Foundations",
+        "amount_chf": 61000
+      },
+      {
+        "sub_category": "EU Humanitarian Aid",
+        "amount_chf": 136000
+      },
+      {
+        "sub_category": "Other Government",
+        "amount_chf": 99000
+      },
+      {
+        "sub_category": "Multilateral (UN)",
+        "amount_chf": 118000
+      }
+    ],
+    "expected_answer": "Found 6 income sub-categor(y/ies) for P001 in 2023."
+  },
+  {
+    "id": "q097",
+    "category": "listing",
+    "question": "List the active projects in Latin America & Caribbean with their funding type.",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT project_id, project_name, funding_type FROM projects WHERE region = 'Latin America & Caribbean' AND is_active = 1;",
+    "expected_rows": [
+      {
+        "project_id": "P009",
+        "project_name": "Amazon Communities Brazil",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P021",
+        "project_name": "Indigenous Territories Brazil",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P044",
+        "project_name": "Youth Employment El Salvador",
+        "funding_type": "Project Co-funding"
+      },
+      {
+        "project_id": "P053",
+        "project_name": "Education Access Haiti",
+        "funding_type": "Service Contract"
+      },
+      {
+        "project_id": "P061",
+        "project_name": "Rural WASH Guatemala",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P071",
+        "project_name": "Child Malnutrition Guatemala",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P077",
+        "project_name": "Cholera Response Haiti",
+        "funding_type": "Service Contract"
+      },
+      {
+        "project_id": "P084",
+        "project_name": "Internally Displaced Colombia",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P085",
+        "project_name": "Women Entrepreneurs Peru",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P092",
+        "project_name": "Migration Assistance Venezuela",
+        "funding_type": "Project Co-funding"
+      },
+      {
+        "project_id": "P102",
+        "project_name": "Quilombola Communities Brazil",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P108",
+        "project_name": "Women Protection Honduras",
+        "funding_type": "Project Co-funding"
+      },
+      {
+        "project_id": "P124",
+        "project_name": "Quinoa Value Chain Bolivia",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P126",
+        "project_name": "Indigenous Communities Guatemala",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P147",
+        "project_name": "Gang Prevention El Salvador",
+        "funding_type": "Project Co-funding"
+      },
+      {
+        "project_id": "P148",
+        "project_name": "Women Empowerment Guatemala",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P159",
+        "project_name": "Cash & Vouchers Venezuela",
+        "funding_type": "Project Co-funding"
+      },
+      {
+        "project_id": "P170",
+        "project_name": "Food Security Honduras",
+        "funding_type": "Project Co-funding"
+      },
+      {
+        "project_id": "P173",
+        "project_name": "Food Security Guatemala",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P179",
+        "project_name": "Climate Migration Peru",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P181",
+        "project_name": "Refugee Host Communities Venezuela",
+        "funding_type": "Project Co-funding"
+      },
+      {
+        "project_id": "P195",
+        "project_name": "Indigenous Amazon Ecuador",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P197",
+        "project_name": "Urban Poverty Brazil",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P198",
+        "project_name": "Urban Poor Quito",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P200",
+        "project_name": "Indigenous Rights Bolivia",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P250",
+        "project_name": "Women Cooperatives Nicaragua",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P263",
+        "project_name": "Food Security Nicaragua",
+        "funding_type": "Institutional Grant"
+      },
+      {
+        "project_id": "P267",
+        "project_name": "Rural Development Colombia",
+        "funding_type": "Institutional Grant"
+      }
+    ],
+    "expected_answer": "Found 28 active project(s) in Latin America & Caribbean."
+  },
+  {
+    "id": "q098",
+    "category": "listing",
+    "question": "List the successful grants from SECO with their associated project country.",
+    "tables": [
+      "projects",
+      "grant_applications"
+    ],
+    "expected_sql": "SELECT g.grant_id, p.project_id, p.country, g.amount_approved_chf FROM grant_applications g JOIN projects p ON p.project_id = g.project_id WHERE g.donor_name = 'SECO' AND g.grant_status = 'successful';",
+    "expected_rows": [
+      {
+        "grant_id": "PQ-2020-0063",
+        "project_id": "P025",
+        "country": "Ethiopia",
+        "amount_approved_chf": 393000.0
+      },
+      {
+        "grant_id": "PQ-2020-0077",
+        "project_id": "P031",
+        "country": "Colombia",
+        "amount_approved_chf": 471000.0
+      },
+      {
+        "grant_id": "PQ-2020-0086",
+        "project_id": "P033",
+        "country": "Tanzania",
+        "amount_approved_chf": 163000.0
+      },
+      {
+        "grant_id": "PQ-2023-0117",
+        "project_id": "P047",
+        "country": "Burundi",
+        "amount_approved_chf": 571000.0
+      },
+      {
+        "grant_id": "PQ-2024-0171",
+        "project_id": "P069",
+        "country": "DRC",
+        "amount_approved_chf": 389000.0
+      },
+      {
+        "grant_id": "PQ-2021-0354",
+        "project_id": "P140",
+        "country": "Senegal",
+        "amount_approved_chf": 951000.0
+      },
+      {
+        "grant_id": "PQ-2021-0501",
+        "project_id": "P196",
+        "country": "Libya",
+        "amount_approved_chf": 364000.0
+      },
+      {
+        "grant_id": "PQ-2022-0525",
+        "project_id": "P206",
+        "country": "Mauritania",
+        "amount_approved_chf": 292000.0
+      },
+      {
+        "grant_id": "PQ-2024-0664",
+        "project_id": "P262",
+        "country": "Uzbekistan",
+        "amount_approved_chf": 373000.0
+      }
+    ],
+    "expected_answer": "Found 9 successful SECO grant(s)."
+  },
+  {
+    "id": "q099",
+    "category": "listing",
+    "question": "List all projects led by Caritas Switzerland with their region and theme.",
+    "tables": [
+      "projects"
+    ],
+    "expected_sql": "SELECT project_id, project_name, region, theme FROM projects WHERE lead_partner = 'Caritas Switzerland';",
+    "expected_rows": [
+      {
+        "project_id": "P012",
+        "project_name": "Food Security Myanmar",
+        "region": "Asia & Pacific",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P013",
+        "project_name": "Rural Livelihoods Togo",
+        "region": "West Africa",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P024",
+        "project_name": "Child Nutrition Yemen",
+        "region": "Middle East & North Africa",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P026",
+        "project_name": "Climate Resilience Brazil",
+        "region": "Latin America & Caribbean",
+        "theme": "Climate"
+      },
+      {
+        "project_id": "P028",
+        "project_name": "Youth Skills Ghana",
+        "region": "West Africa",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P039",
+        "project_name": "Rural Development Sri Lanka",
+        "region": "Asia & Pacific",
+        "theme": "Migration"
+      },
+      {
+        "project_id": "P054",
+        "project_name": "Emergency Nutrition Chad",
+        "region": "Sahel",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P055",
+        "project_name": "Pastoralist Kyrgyzstan",
+        "region": "Asia & Pacific",
+        "theme": "Climate"
+      },
+      {
+        "project_id": "P060",
+        "project_name": "Stabilisation Mali",
+        "region": "Sahel",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P061",
+        "project_name": "Rural WASH Guatemala",
+        "region": "Latin America & Caribbean",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P071",
+        "project_name": "Child Malnutrition Guatemala",
+        "region": "Latin America & Caribbean",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P073",
+        "project_name": "Emergency Relief Myanmar",
+        "region": "Asia & Pacific",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P083",
+        "project_name": "Food Security Liberia",
+        "region": "West Africa",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P089",
+        "project_name": "Women Protection DRC",
+        "region": "East Africa",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P093",
+        "project_name": "Coastal Livelihoods Kenya",
+        "region": "East Africa",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P094",
+        "project_name": "Climate Resilience Tanzania",
+        "region": "East Africa",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P099",
+        "project_name": "Food Crisis Response Sudan",
+        "region": "Middle East & North Africa",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P101",
+        "project_name": "Climate Resilience Chad",
+        "region": "Sahel",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P111",
+        "project_name": "Women Entrepreneurs Kosovo",
+        "region": "Eastern Europe",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P113",
+        "project_name": "Women Empowerment Moldova",
+        "region": "Eastern Europe",
+        "theme": "Migration"
+      },
+      {
+        "project_id": "P115",
+        "project_name": "Microfinance Cambodia",
+        "region": "Asia & Pacific",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P130",
+        "project_name": "Youth Skills Zimbabwe",
+        "region": "Southern Africa",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P131",
+        "project_name": "WASH Guinea",
+        "region": "West Africa",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P150",
+        "project_name": "Emergency Food Ukraine",
+        "region": "Eastern Europe",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P151",
+        "project_name": "Women Finance Rwanda",
+        "region": "East Africa",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P155",
+        "project_name": "Urban Reconstruction Ukraine",
+        "region": "Eastern Europe",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P163",
+        "project_name": "Smallholder Agriculture Zimbabwe",
+        "region": "Southern Africa",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P165",
+        "project_name": "WASH South Sudan",
+        "region": "East Africa",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P172",
+        "project_name": "Food Security Mozambique",
+        "region": "Southern Africa",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P177",
+        "project_name": "Food Security Haiti",
+        "region": "Latin America & Caribbean",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P196",
+        "project_name": "Migrant Support Libya",
+        "region": "Middle East & North Africa",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P207",
+        "project_name": "Urban Slum India",
+        "region": "Asia & Pacific",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P208",
+        "project_name": "Andean Communities Peru",
+        "region": "Latin America & Caribbean",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P209",
+        "project_name": "Displacement Response Niger",
+        "region": "Sahel",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P211",
+        "project_name": "Food Security Peru",
+        "region": "Latin America & Caribbean",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P212",
+        "project_name": "Emergency Sahel BF",
+        "region": "Sahel",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P215",
+        "project_name": "Typhoon Recovery Philippines",
+        "region": "Asia & Pacific",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P224",
+        "project_name": "Urban Poverty Zimbabwe",
+        "region": "Southern Africa",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P229",
+        "project_name": "Smallholder Malawi",
+        "region": "Southern Africa",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P239",
+        "project_name": "Youth Employment Kenya",
+        "region": "East Africa",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P249",
+        "project_name": "Emergency Nutrition South Sudan",
+        "region": "East Africa",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P252",
+        "project_name": "Winter Relief Afghanistan",
+        "region": "Middle East & North Africa",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P262",
+        "project_name": "Agricultural Development Uzbekistan",
+        "region": "Asia & Pacific",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P267",
+        "project_name": "Rural Development Colombia",
+        "region": "Latin America & Caribbean",
+        "theme": "Income"
+      },
+      {
+        "project_id": "P275",
+        "project_name": "Lake Chad Basin Cameroon",
+        "region": "Sahel",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P282",
+        "project_name": "Coastal Resilience Bangladesh",
+        "region": "Asia & Pacific",
+        "theme": "Climate"
+      },
+      {
+        "project_id": "P285",
+        "project_name": "Disaster Risk Reduction Philippines",
+        "region": "Asia & Pacific",
+        "theme": "Humanitarian Aid"
+      },
+      {
+        "project_id": "P290",
+        "project_name": "Food Security Zambia",
+        "region": "Southern Africa",
+        "theme": "Income"
+      }
+    ],
+    "expected_answer": "Found 48 project(s) led by Caritas Switzerland."
+  },
+  {
+    "id": "q100",
+    "category": "listing",
+    "question": "List all 2024 budget records for project P001.",
+    "tables": [
+      "budget_actuals"
+    ],
+    "expected_sql": "SELECT budget_line, sub_category, amount_chf FROM budget_actuals WHERE project_id = 'P001' AND fiscal_year = 2024;",
+    "expected_rows": [
+      {
+        "budget_line": "Total income",
+        "sub_category": "Other Government",
+        "amount_chf": 87000
+      },
+      {
+        "budget_line": "Total income",
+        "sub_category": "SDC Contribution",
+        "amount_chf": 294000
+      },
+      {
+        "budget_line": "Total income",
+        "sub_category": "Multilateral (UN)",
+        "amount_chf": 76000
+      },
+      {
+        "budget_line": "Co-financing",
+        "sub_category": "In-kind Contributions",
+        "amount_chf": 34000
+      },
+      {
+        "budget_line": "Indirect Costs",
+        "sub_category": "Overhead",
+        "amount_chf": 77000
+      },
+      {
+        "budget_line": "Total project costs",
+        "sub_category": "Partner Costs",
+        "amount_chf": 273000
+      },
+      {
+        "budget_line": "Total income",
+        "sub_category": "Own Funds / Reserves",
+        "amount_chf": 21000
+      },
+      {
+        "budget_line": "Total income",
+        "sub_category": "Private Foundations",
+        "amount_chf": 41000
+      },
+      {
+        "budget_line": "Co-financing",
+        "sub_category": "Local Government",
+        "amount_chf": 57000
+      },
+      {
+        "budget_line": "Total project costs",
+        "sub_category": "Staff Costs",
+        "amount_chf": 359000
+      },
+      {
+        "budget_line": "Total project costs",
+        "sub_category": "Monitoring & Evaluation",
+        "amount_chf": 79000
+      },
+      {
+        "budget_line": "Total project costs",
+        "sub_category": "Training & Capacity",
+        "amount_chf": 83000
+      },
+      {
+        "budget_line": "Indirect Costs",
+        "sub_category": "Admin Allocation",
+        "amount_chf": 51000
+      },
+      {
+        "budget_line": "Co-financing",
+        "sub_category": "Community Contribution",
+        "amount_chf": 23000
+      },
+      {
+        "budget_line": "Total project costs",
+        "sub_category": "Operational Costs",
+        "amount_chf": 282000
+      },
+      {
+        "budget_line": "Total project costs",
+        "sub_category": "Equipment & Supplies",
+        "amount_chf": 112000
+      },
+      {
+        "budget_line": "Total income",
+        "sub_category": "EU Humanitarian Aid",
+        "amount_chf": 98000
+      }
+    ],
+    "expected_answer": "Found 17 budget record(s) for P001 in 2024."
+  }
+]

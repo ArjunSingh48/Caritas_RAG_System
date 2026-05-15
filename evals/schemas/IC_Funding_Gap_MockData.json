@@ -1,0 +1,579 @@
+[
+  {
+    "name": "ic_funding_gap_mockdata_readme",
+    "file": "datasets/raw/IC_Funding_Gap_MockData.xlsx",
+    "sheet": "README",
+    "schema": {
+      "Unnamed: 0": {
+        "dtype": "float",
+        "sample_values": [],
+        "nullability": true,
+        "primary_key": false,
+        "description": ""
+      },
+      "Unnamed: 1": {
+        "dtype": "string",
+        "sample_values": [
+          "IC Funding Gap Report \u2014 Mock Dataset",
+          "Hack4Good 2026 \u00b7 Caritas Switzerland \u00b7 Analytics Club at ETH",
+          "Sheets",
+          "Sheet",
+          "projects"
+        ],
+        "nullability": true,
+        "primary_key": false,
+        "description": ""
+      },
+      "Unnamed: 2": {
+        "dtype": "string",
+        "sample_values": [
+          "Purpose",
+          "One row per IC project (Abacus side). Master dimension table. Join budget_actuals and grant_applications on project_id.",
+          "Financial fact table. Income & costs per project, year, budget line, and sub-category. Funding Gap = SUM(costs+indirect) minus SUM(income+co-financing).",
+          "Grant pipeline (CARA side). One row per donor application. Filter grant_status='successful' or 'in_progress' for pipeline totals.",
+          "Data dictionary covering every column. Recommended as the RAG metadata index."
+        ],
+        "nullability": true,
+        "primary_key": false,
+        "description": ""
+      }
+    }
+  },
+  {
+    "name": "ic_funding_gap_mockdata_projects",
+    "file": "datasets/raw/IC_Funding_Gap_MockData.xlsx",
+    "sheet": "projects",
+    "schema": {
+      "project_id": {
+        "dtype": "string",
+        "sample_values": [
+          "P001",
+          "P002",
+          "P003",
+          "P004",
+          "P005"
+        ],
+        "nullability": false,
+        "primary_key": true,
+        "description": ""
+      },
+      "project_name": {
+        "dtype": "string",
+        "sample_values": [
+          "Displacement Response Iraq",
+          "Land & Rights Uganda",
+          "Emergency WASH Yemen",
+          "WASH Burundi",
+          "Reconciliation Kosovo"
+        ],
+        "nullability": false,
+        "primary_key": true,
+        "description": ""
+      },
+      "cost_centre_code": {
+        "dtype": "integer",
+        "sample_values": [
+          13612,
+          13106,
+          13606,
+          13614,
+          13252
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "cost_centre_name": {
+        "dtype": "string",
+        "sample_values": [
+          "Iraq",
+          "Uganda",
+          "Yemen",
+          "Burundi",
+          "Kosovo"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "country": {
+        "dtype": "string",
+        "sample_values": [
+          "Iraq",
+          "Uganda",
+          "Yemen",
+          "Burundi",
+          "Kosovo"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "region": {
+        "dtype": "string",
+        "sample_values": [
+          "Middle East & North Africa",
+          "East Africa",
+          "Eastern Europe",
+          "Southern Africa",
+          "Latin America & Caribbean"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "theme": {
+        "dtype": "string",
+        "sample_values": [
+          "Humanitarian Aid",
+          "Income",
+          "Migration",
+          "Climate"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "funding_type": {
+        "dtype": "string",
+        "sample_values": [
+          "Service Contract",
+          "Institutional Grant",
+          "Project Co-funding"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "project_status": {
+        "dtype": "string",
+        "sample_values": [
+          "Completed",
+          "Idea",
+          "Cancelled",
+          "Closed",
+          "Active"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "start_date": {
+        "dtype": "string",
+        "sample_values": [
+          "2020-07-01T00:00:00",
+          "2025-04-01T00:00:00",
+          "2020-01-01T00:00:00",
+          "2021-07-01T00:00:00",
+          "2017-01-01T00:00:00"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "end_date": {
+        "dtype": "string",
+        "sample_values": [
+          "2022-12-31T00:00:00",
+          "2028-12-31T00:00:00",
+          "2023-12-31T00:00:00",
+          "2025-12-31T00:00:00",
+          "2027-12-31T00:00:00"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "is_active": {
+        "dtype": "boolean",
+        "sample_values": [
+          false,
+          true
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "lead_partner": {
+        "dtype": "string",
+        "sample_values": [
+          "UN Agency",
+          "Government Agency",
+          "Local NGO",
+          "Caritas Switzerland",
+          "Research Institute"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "beneficiaries_target": {
+        "dtype": "integer",
+        "sample_values": [
+          15447,
+          4538,
+          13463,
+          15855,
+          16991
+        ],
+        "nullability": false,
+        "primary_key": true,
+        "description": ""
+      }
+    }
+  },
+  {
+    "name": "ic_funding_gap_mockdata_budget_actuals",
+    "file": "datasets/raw/IC_Funding_Gap_MockData.xlsx",
+    "sheet": "budget_actuals",
+    "schema": {
+      "record_id": {
+        "dtype": "integer",
+        "sample_values": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "nullability": false,
+        "primary_key": true,
+        "description": ""
+      },
+      "project_id": {
+        "dtype": "string",
+        "sample_values": [
+          "P251",
+          "P076",
+          "P282",
+          "P263",
+          "P179"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "fiscal_year": {
+        "dtype": "integer",
+        "sample_values": [
+          2020,
+          2023,
+          2019,
+          2022,
+          2024
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "budget_line": {
+        "dtype": "string",
+        "sample_values": [
+          "Total project costs",
+          "Total income",
+          "Co-financing",
+          "Indirect Costs"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "sub_category": {
+        "dtype": "string",
+        "sample_values": [
+          "Equipment & Supplies",
+          "EU Humanitarian Aid",
+          "Local Government",
+          "In-kind Contributions",
+          "Community Contribution"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "amount_chf": {
+        "dtype": "integer",
+        "sample_values": [
+          62000,
+          143000,
+          97000,
+          79000,
+          67000
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "report_date": {
+        "dtype": "string",
+        "sample_values": [
+          "2020-12-31T00:00:00",
+          "2023-12-31T00:00:00",
+          "2019-12-31T00:00:00",
+          "2022-12-31T00:00:00",
+          "2024-12-31T00:00:00"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      }
+    }
+  },
+  {
+    "name": "ic_funding_gap_mockdata_grant_applications",
+    "file": "datasets/raw/IC_Funding_Gap_MockData.xlsx",
+    "sheet": "grant_applications",
+    "schema": {
+      "grant_id": {
+        "dtype": "string",
+        "sample_values": [
+          "PQ-2022-0001",
+          "PQ-2024-0002",
+          "PQ-2022-0003",
+          "PQ-2021-0004",
+          "PQ-2022-0005"
+        ],
+        "nullability": false,
+        "primary_key": true,
+        "description": ""
+      },
+      "project_id": {
+        "dtype": "string",
+        "sample_values": [
+          "P001",
+          "P002",
+          "P003",
+          "P004",
+          "P005"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "donor_name": {
+        "dtype": "string",
+        "sample_values": [
+          "SECO",
+          "OCHA",
+          "Oxfam",
+          "AFD (France)",
+          "EU Development Fund (EDF)"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "donor_type": {
+        "dtype": "string",
+        "sample_values": [
+          "Government",
+          "Multilateral",
+          "NGO",
+          "Private"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "donor_country": {
+        "dtype": "string",
+        "sample_values": [
+          "CH",
+          "UN",
+          "UK",
+          "FR",
+          "EU"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "amount_requested_chf": {
+        "dtype": "integer",
+        "sample_values": [
+          916000,
+          319000,
+          448000,
+          748000,
+          1077000
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "amount_approved_chf": {
+        "dtype": "float",
+        "sample_values": [
+          227000.0,
+          535000.0,
+          691000.0,
+          831000.0,
+          1039000.0
+        ],
+        "nullability": true,
+        "primary_key": false,
+        "description": ""
+      },
+      "grant_status": {
+        "dtype": "string",
+        "sample_values": [
+          "cancelled",
+          "successful",
+          "in_progress",
+          "unsuccessful"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "success_chance": {
+        "dtype": "string",
+        "sample_values": [
+          "Low",
+          "Medium",
+          "High"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "submission_date": {
+        "dtype": "string",
+        "sample_values": [
+          "2022-01-07T00:00:00",
+          "2024-01-18T00:00:00",
+          "2022-01-11T00:00:00",
+          "2021-11-23T00:00:00",
+          "2022-06-19T00:00:00"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "decision_date": {
+        "dtype": "string",
+        "sample_values": [
+          "2022-05-28T00:00:00",
+          "2024-03-28T00:00:00",
+          "2021-12-28T00:00:00",
+          "2022-09-28T00:00:00",
+          "2023-12-28T00:00:00"
+        ],
+        "nullability": true,
+        "primary_key": false,
+        "description": ""
+      },
+      "is_multi_year": {
+        "dtype": "boolean",
+        "sample_values": [
+          false,
+          true
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "reporting_currency": {
+        "dtype": "string",
+        "sample_values": [
+          "CHF",
+          "EUR",
+          "USD"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      }
+    }
+  },
+  {
+    "name": "ic_funding_gap_mockdata_metadata",
+    "file": "datasets/raw/IC_Funding_Gap_MockData.xlsx",
+    "sheet": "metadata",
+    "schema": {
+      "table_name": {
+        "dtype": "string",
+        "sample_values": [
+          "projects",
+          "budget_actuals",
+          "grant_applications"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "column_name": {
+        "dtype": "string",
+        "sample_values": [
+          "project_id",
+          "project_name",
+          "cost_centre_code",
+          "cost_centre_name",
+          "country"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "data_type": {
+        "dtype": "string",
+        "sample_values": [
+          "string",
+          "integer",
+          "categorical",
+          "date",
+          "boolean"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "description": {
+        "dtype": "string",
+        "sample_values": [
+          "Unique identifier for each IC project. Format: P followed by 3-digit number.",
+          "Full descriptive name of the IC project.",
+          "Abacus cost-centre numeric code. Identifies the country programme unit responsible for the project budget.",
+          "Human-readable name of the cost centre (country or crisis context).",
+          "ISO country name for the cost centre."
+        ],
+        "nullability": false,
+        "primary_key": true,
+        "description": ""
+      },
+      "example_values": {
+        "dtype": "string",
+        "sample_values": [
+          "P001, P042, P017",
+          "Sustainable Livelihoods Ethiopia II, Emergency Relief Syria",
+          "13101, 13605, 13301",
+          "Ethiopia, Ukraine, Gaza / Palestine, Ghana",
+          "Ethiopia, Ukraine, Chad, Colombia"
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "is_primary_key": {
+        "dtype": "boolean",
+        "sample_values": [
+          true,
+          false
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      },
+      "is_nullable": {
+        "dtype": "boolean",
+        "sample_values": [
+          false,
+          true
+        ],
+        "nullability": false,
+        "primary_key": false,
+        "description": ""
+      }
+    }
+  }
+]

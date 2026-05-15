@@ -1,0 +1,58 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: caritas
+      POSTGRES_PASSWORD: caritas
+      POSTGRES_DB: caritas
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U caritas -d caritas"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    # No healthcheck: the ollama image is minimal (no curl/wget) and `ollama list`
+    # can be flaky on cold starts. The backend tolerates Ollama being briefly
+    # unavailable on boot.
+    # GPU users: uncomment the deploy block below
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - capabilities: [gpu]
+
+  backend:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    environment:
+      DATABASE_URL: postgresql+psycopg2://caritas:caritas@db:5432/caritas
+      OLLAMA_BASE_URL: http://ollama:11434
+      SQL_MODEL: gemma3:4b
+      ANSWER_MODEL: gemma3:4b
+      CORS_ORIGINS: '["http://localhost:5173","http://127.0.0.1:5173","http://localhost:3000"]'
+      UPLOAD_DIR: /data/uploads
+      MAX_UPLOAD_SIZE_MB: "50"
+      GENERATE_COLUMN_DESCRIPTION: "False"
+    ports:
+      - "8000:8000"
+    volumes:
+      - uploads_data:/data/uploads
+
+volumes:
+  db_data:
+  ollama_data:
+  uploads_data:

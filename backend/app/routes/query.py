@@ -1,0 +1,86 @@
+import json
+
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import text
+from sqlalchemy.orm import Session
+
+from app.db.session import get_db
+from app.db.schema import Chat, Dataset
+from app.routes.schema import QueryRequest, QueryResponse
+from app.services.llm_service import generate_answer, generate_sql
+
+router = APIRouter(prefix="/query", tags=["query"])
+
+
+def _load_datasets(
+    db: Session,
+    user_id: str | None,
+    chat_id: str | None,
+    dataset_ids: list[str] | None,
+) -> list[dict]:
+    """
+    Fetch schema metadata for datasets in scope.
+    Filters to dataset_ids when provided, otherwise loads all.
+
+    TODO: If len(datasets) > 10, switch to RAG-based schema retrieval instead of
+    loading all schemas into the prompt.
+    """
+    query = db.query(Dataset)
+    if dataset_ids is not None:
+        query = query.filter(Dataset.dataset_id.in_(dataset_ids))
+    elif chat_id is not None:
+        query = query.filter(Dataset.chat_id == chat_id)
+    elif user_id is not None:
+        query = query.join(Chat, Dataset.chat_id == Chat.chat_id).filter(Chat.user_id == user_id)
+    datasets = query.all()
+    if not datasets:
+        raise HTTPException(status_code=404, detail="No datasets available to query.")
+
+    return [
+        {
+            "table_name": d.table_name,
+            "schema": json.loads(d.schema_json),
+            "filename": d.filename,
+            "sheet_name": d.sheet_name,
+            "table_description": d.table_description,
+        }
+        for d in datasets
+    ]
+
+
+@router.post("", response_model=QueryResponse)
+def query_dataset(body: QueryRequest, db: Session = Depends(get_db)):
+    if not body.dataset_ids and not body.chat_id and not body.user_id:
+        raise HTTPException(
+            status_code=400,
+            detail="No dataset scope provided. Upload a file first or include a chat or dataset id.",
+        )
+
+    tables = _load_datasets(db, user_id=body.user_id, chat_id=body.chat_id, dataset_ids=body.dataset_ids)
+
+    try:
+        sql, display_sql = generate_sql(tables, body.question)
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=f"SQL generation failed: {exc}")
+
+    try:
+        result = db.execute(text(sql))
+        columns = list(result.keys())
+        rows = [dict(zip(columns, row)) for row in result.fetchall()]
+    except Exception as exc:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Generated SQL could not be executed: {exc}\n\nSQL was: {sql}",
+        )
+
+    try:
+        answer = generate_answer(body.question, sql, rows)
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=f"Answer generation failed: {exc}")
+
+    return QueryResponse(
+        question=body.question,
+        answer=answer,
+        sql=display_sql,  # show readable alias names in the debug output, not UUIDs
+        rows=rows,
+    )

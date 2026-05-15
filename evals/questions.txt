@@ -1,0 +1,32 @@
+1. What are the total project costs, total income, and total funding gap across all active projects?
+2. What are the total project costs, total income, and total funding gap per year per region? (or for a specific year and/or region or other categories)
+3. How many projects are currently active?
+4. How many projects do we have per region?
+5. What percentage of our total costs are covered by income?
+6. Which region has the largest funding gap?
+7. Show me the funding gap for each region in year 20xx.
+8. How has the total funding gap changed from 2020 to 2024?
+9. In which year was the funding gap the largest?
+10. How Staff Costs have evolved year by year?
+11. Which year had the most grant applications submitted?
+12. What is the biggest cost category across all projects?
+13. What are the Staff Costs/Partner Costs? (for a specific year and/or region or other categories)
+14. Which theme (Humanitarian Aid, Income, Climate, or Migration) has the largest total funding gap?
+15. Do Service Contract projects have a smaller funding gap than Institutional Grant projects?
+16. Which 10 projects have the largest funding gap?
+17. Are there any active projects whose end date has already passed?
+18. Show me all Climate theme projects and their funding gap sorted from largest to smallest.
+19. How many grant applications are currently in progress?
+20. Who are our top 5 donors by total approved amount?
+21. What is the total funding gap per region in 2024?	
+22. How has the cumulative funding gap evolved from 2020 to 2024?	
+23. Which donor type and country contribute the most to successful grants?	
+24. Show the breakdown of income sub-categories for Sahel projects in 2023.	
+25. Which cost sub-category is growing fastest as a share of total project costs?	
+26. What is the grant success rate by region and by donor type?	
+27. Are there active projects with a past end date? (data quality check)	
+28. How does Staff Costs compare to Partner Costs across regions?	
+29. Which projects have both Contingency budget lines and unsuccessful grant applications?	
+30. What share of total income comes from co-financing vs direct donor contributions?	
+31. Compare average project size (total costs) across the 7 regions.	
+32. Which lead partner type is associated with the highest funding gap ratio?	
