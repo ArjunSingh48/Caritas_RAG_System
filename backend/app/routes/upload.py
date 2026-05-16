@@ -24,13 +24,20 @@ TEST_USER = uuid.UUID("1d560601-97aa-4ada-8cea-c6c53405c73d")
 
 def _ensure_chat(db: Session, chat_id: uuid.UUID | None) -> uuid.UUID:
     target_chat_id = chat_id or uuid.uuid4()
-    existing = db.query(Chat).filter(Chat.chat_id == target_chat_id).first()
-    if existing:
-        return existing.chat_id
-
-    chat = Chat(chat_id=target_chat_id, user_id=TEST_USER, name="Chat")
-    db.add(chat)
+    db.execute(
+        text(
+            """
+            INSERT INTO chats (chat_id, user_id, name)
+            VALUES (:chat_id, :user_id, :name)
+            ON CONFLICT (chat_id) DO NOTHING
+            """
+        ),
+        {"chat_id": target_chat_id, "user_id": TEST_USER, "name": "Chat"},
+    )
     db.commit()
+    existing = db.query(Chat).filter(Chat.chat_id == target_chat_id).first()
+    if not existing:
+        raise RuntimeError(f"Failed to create chat {target_chat_id}")
     return target_chat_id
 
 
@@ -44,10 +51,10 @@ def _persist_dataset(db: Session, dataset: Dataset, chat_id: uuid.UUID) -> None:
         )
 
     try:
-        with db.begin_nested():
-            db.add(dataset)
-            db.flush()
+        db.add(dataset)
+        db.flush()
         db.commit()
+        db.refresh(dataset)
     except IntegrityError:
         db.rollback()
         raise
@@ -83,6 +90,9 @@ async def upload_file(
     db: Session = Depends(get_db),
 ):
     chat_id = _ensure_chat(db, chat_id)
+    confirmed_chat = db.query(Chat).filter(Chat.chat_id == chat_id).first()
+    if not confirmed_chat:
+        raise HTTPException(status_code=500, detail=f"Chat could not be created for upload: {chat_id}")
 
     suffix = Path(file.filename).suffix.lower()
     if suffix not in ALLOWED_EXTENSIONS:

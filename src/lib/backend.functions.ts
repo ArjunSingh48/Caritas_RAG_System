@@ -36,12 +36,6 @@ export interface BackendChat {
   name: string;
 }
 
-export interface BackendEnsureChatResponse {
-  chat_id: string;
-  name: string;
-  created: boolean;
-}
-
 // ---------- Health ----------
 
 export const apiHealth = createServerFn({ method: "GET" }).handler(async () => {
@@ -70,16 +64,6 @@ export const apiCreateChat = createServerFn({ method: "POST" }).handler(
       body: "{}",
     }),
 );
-
-export const apiEnsureChat = createServerFn({ method: "POST" })
-  .inputValidator((input: { chatId: string }) => input)
-  .handler(async ({ data }) =>
-    backendJson<BackendEnsureChatResponse>("/chats/ensure", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: data.chatId }),
-    }),
-  );
 
 // ---------- Upload ----------
 // We accept file bytes as base64 from the browser and rebuild a multipart body

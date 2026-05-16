@@ -1,6 +1,7 @@
 // Per-user chat persistence (frontend only, localStorage).
 
 import type { GraphSpec } from "@/lib/graph-pick";
+import type { ParsedSheet } from "@/lib/parse-file";
 
 export interface ChatMessage {
   id: string;
@@ -33,6 +34,8 @@ export interface ChatDataset {
   rows?: number;
   columns?: ChatDatasetColumn[];
   data?: Record<string, unknown>[];
+  sheets?: ParsedSheet[];
+  activeSheetName?: string;
   // Backend dataset_id when uploaded to FastAPI; absent when running mock-only.
   remoteId?: string;
   tableDescription?: string;

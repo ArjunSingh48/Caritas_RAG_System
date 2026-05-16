@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { X, Maximize2, Minimize2, Database, BarChart3, LayoutDashboard } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
@@ -30,6 +30,16 @@ interface ViewerPanelProps {
 
 const PAGE_SIZE = 50;
 
+function colLetter(idx: number): string {
+  let n = idx;
+  let s = "";
+  while (n >= 0) {
+    s = String.fromCharCode((n % 26) + 65) + s;
+    n = Math.floor(n / 26) - 1;
+  }
+  return s;
+}
+
 function formatCell(value: unknown, type: string): string {
   if (value === null || value === undefined || value === "") return "—";
   if (type === "number") {
@@ -42,13 +52,29 @@ function formatCell(value: unknown, type: string): string {
 function DatasetView({ dataset }: { dataset: ChatDataset }) {
   const { t } = useTranslation();
   const [page, setPage] = useState(0);
-  const data = dataset.data ?? [];
-  const columns = dataset.columns ?? [];
+  const sheets = dataset.sheets?.length
+    ? dataset.sheets
+    : [{ name: dataset.activeSheetName ?? dataset.name, rows: dataset.rows ?? (dataset.data ?? []).length, columns: dataset.columns ?? [], data: dataset.data ?? [] }];
+  const [activeSheetName, setActiveSheetName] = useState(dataset.activeSheetName ?? sheets[0]?.name ?? dataset.name);
+  const activeSheet = sheets.find((sheet) => sheet.name === activeSheetName) ?? sheets[0];
+  const data = activeSheet?.data ?? [];
+  const columns = activeSheet?.columns ?? [];
   const totalPages = Math.max(1, Math.ceil(data.length / PAGE_SIZE));
   const pageRows = useMemo(
     () => data.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE),
     [data, page]
   );
+
+  useEffect(() => {
+    setActiveSheetName(dataset.activeSheetName ?? sheets[0]?.name ?? dataset.name);
+    setPage(0);
+  }, [dataset.id, dataset.activeSheetName, dataset.name, sheets]);
+
+  useEffect(() => {
+    if (page >= totalPages) {
+      setPage(0);
+    }
+  }, [page, totalPages]);
 
   return (
     <Tabs defaultValue="table" className="flex h-full flex-col">
@@ -60,13 +86,27 @@ function DatasetView({ dataset }: { dataset: ChatDataset }) {
       </div>
       <TabsContent value="table" className="m-0 flex-1 overflow-auto">
         <div className="min-w-full bg-card">
-          <Table className="min-w-max border-separate border-spacing-0">
+          <Table className="min-w-max border-separate border-spacing-0 text-[13px]">
             <TableHeader>
               <TableRow>
+                <TableHead className="sticky left-0 top-0 z-30 w-10 border-b border-r border-border bg-muted px-2 py-1 text-center text-[11px] font-normal text-muted-foreground" />
+                {columns.map((c, i) => (
+                  <TableHead
+                    key={`${c.name}-letter`}
+                    className="sticky top-0 z-20 min-w-36 border-b border-r border-border bg-muted px-2 py-1 text-center text-[11px] font-normal text-muted-foreground last:border-r-0"
+                  >
+                    {colLetter(i)}
+                  </TableHead>
+                ))}
+              </TableRow>
+              <TableRow>
+                <TableHead className="sticky left-0 top-0 z-30 w-10 border-b border-r border-border bg-muted px-2 py-1 text-center text-[11px] font-normal text-muted-foreground">
+                  1
+                </TableHead>
                 {columns.map((c) => (
                   <TableHead
                     key={c.name}
-                    className="sticky top-0 z-10 min-w-36 max-w-64 whitespace-nowrap border-b border-r border-border bg-muted px-3 py-2 text-xs font-semibold text-foreground last:border-r-0"
+                    className="sticky top-0 z-10 min-w-36 max-w-64 whitespace-nowrap border-b border-r border-border bg-muted/40 px-3 py-2 text-xs font-semibold text-foreground last:border-r-0"
                   >
                     <div className="max-w-56 truncate" title={c.name}>{c.name}</div>
                     <div className="text-[10px] font-normal uppercase text-muted-foreground">{c.type}</div>
@@ -77,10 +117,13 @@ function DatasetView({ dataset }: { dataset: ChatDataset }) {
             <TableBody>
               {pageRows.map((row, i) => (
                 <TableRow key={i} className="odd:bg-background even:bg-muted/20 hover:bg-muted/50">
+                  <TableCell className="sticky left-0 z-10 w-10 border-b border-r border-border bg-muted px-2 py-2 text-center text-[11px] text-muted-foreground">
+                    {page * PAGE_SIZE + i + 2}
+                  </TableCell>
                   {columns.map((c) => (
                     <TableCell
                       key={c.name}
-                      className={`max-w-64 whitespace-nowrap border-r border-border px-3 py-2 text-sm last:border-r-0 ${c.type === "number" ? "text-right tabular-nums" : "text-left"}`}
+                      className={`max-w-64 whitespace-nowrap border-b border-r border-border px-3 py-2 text-sm last:border-r-0 ${c.type === "number" ? "text-right tabular-nums" : "text-left"}`}
                     >
                       <span className="block max-w-56 truncate" title={formatCell((row as Record<string, unknown>)[c.name], c.type)}>
                         {formatCell((row as Record<string, unknown>)[c.name], c.type)}
@@ -92,6 +135,26 @@ function DatasetView({ dataset }: { dataset: ChatDataset }) {
             </TableBody>
           </Table>
         </div>
+        {sheets.length > 1 && (
+          <div className="flex items-center gap-0 overflow-x-auto border-t border-border bg-muted px-2 py-1">
+            {sheets.map((sheet) => {
+              const isActive = sheet.name === activeSheet?.name;
+              return (
+                <button
+                  key={sheet.name}
+                  type="button"
+                  onClick={() => {
+                    setActiveSheetName(sheet.name);
+                    setPage(0);
+                  }}
+                  className={isActive ? "border-t-2 border-primary bg-background px-3 py-1.5 text-xs font-semibold text-foreground" : "px-3 py-1.5 text-xs text-muted-foreground hover:bg-background/70"}
+                >
+                  {sheet.name}
+                </button>
+              );
+            })}
+          </div>
+        )}
         <div className="flex items-center justify-between border-t border-border px-3 py-2 text-xs text-muted-foreground">
           <span>
             Page {page + 1} / {totalPages}
@@ -120,7 +183,7 @@ function DatasetView({ dataset }: { dataset: ChatDataset }) {
       </TabsContent>
       <TabsContent value="schema" className="m-0 flex-1 overflow-auto p-4">
         <div className="mb-3 rounded-md border border-border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
-          {columns.length} columns • {data.length} rows
+          {columns.length} columns • {activeSheet?.rows ?? data.length} rows
         </div>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {columns.map((c) => (

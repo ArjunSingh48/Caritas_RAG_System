@@ -2,10 +2,11 @@ import uuid
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import text
 
 from app.db.base import Base
 from app.db.schema import Chat, Dataset
-from app.routes.upload import _persist_dataset
+from app.routes.upload import _persist_dataset, _ensure_chat
 
 
 def _make_session():
@@ -66,3 +67,20 @@ def test_persist_dataset_succeeds_for_existing_chat():
     stored = db.query(Dataset).filter(Dataset.dataset_id == dataset.dataset_id).first()
     assert stored is not None
     assert stored.chat_id == chat_id
+
+
+def test_ensure_chat_creates_or_reuses_requested_chat_id():
+    db = _make_session()
+    chat_id = uuid.uuid4()
+
+    ensured = _ensure_chat(db, chat_id)
+    assert ensured == chat_id
+
+    rows = db.execute(text("SELECT chat_id FROM chats WHERE chat_id = :chat_id"), {"chat_id": chat_id}).fetchall()
+    assert len(rows) == 1
+
+    ensured_again = _ensure_chat(db, chat_id)
+    assert ensured_again == chat_id
+
+    rows = db.execute(text("SELECT chat_id FROM chats WHERE chat_id = :chat_id"), {"chat_id": chat_id}).fetchall()
+    assert len(rows) == 1

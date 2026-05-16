@@ -166,6 +166,7 @@ See [`evals/README.md`](evals/README.md).
 - **`relation "datasets" does not exist`** — backend hasn't finished init. Wait 10s and retry, or `docker compose restart backend`.
 - **`model "gemma3:4b" not found`** — run `docker compose exec ollama ollama pull gemma3:4b`.
 - **Upload works but query returns 500** — the model usually is not ready yet. Check `docker compose logs -f ollama backend`, wait for the pull to finish, then retry.
+- **You previously saw `datasets_chat_id_fkey` or `Backend chat sync failed: Method Not Allowed`** — update to the latest code, then run `docker compose down -v && docker compose up -d`, pull `gemma3:4b`, and restart `bun dev` so the fixed upload flow is used.
 - **Ollama OOM** — switch to a smaller tag (`gemma2:2b`) and update both `SQL_MODEL` and `ANSWER_MODEL`.
 - **Lovable preview can't reach my backend** — by design. The hosted preview can't talk to your `localhost`. Either run the frontend locally, or expose the backend with `ngrok http 8000` and set `BACKEND_API_URL` to the public URL.
 

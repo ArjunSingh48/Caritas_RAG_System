@@ -21,7 +21,6 @@ import type { ChatDataset, ChatDashboard, ChatVisual } from "@/lib/chats";
 import type { ParsedFile } from "@/lib/parse-file";
 import { pickGraph } from "@/lib/graph-pick";
 import {
-  ensureBackendChat,
   isBackendOnline,
   uploadFileToBackend,
   queryBackend,
@@ -116,15 +115,7 @@ function ChatPage() {
     const wantsDashboard = DASHBOARD_INTENT.test(text);
     const chatId = activeChatId ?? newChat();
     const backendOnline = await isBackendOnline();
-    let backendChatId = chatId;
-
-    if (backendOnline) {
-      try {
-        backendChatId = (await ensureBackendChat(chatId)) ?? chatId;
-      } catch (err) {
-        toast.error(`Backend chat sync failed: ${(err as Error).message}`);
-      }
-    }
+    const backendChatId = chatId;
 
     // Track datasets we just added so we can scope a query to them even before state updates.
     const newRemoteIds: string[] = [];
@@ -164,6 +155,8 @@ function ChatPage() {
           rows: p.rows,
           columns: p.columns,
           data: p.data,
+          sheets: p.sheets,
+          activeSheetName: p.sheets[0]?.name,
           remoteId,
           tableDescription,
         };
