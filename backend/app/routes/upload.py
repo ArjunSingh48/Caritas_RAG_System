@@ -23,21 +23,37 @@ TEST_USER = uuid.UUID("1d560601-97aa-4ada-8cea-c6c53405c73d")
 
 
 def _ensure_chat(db: Session, chat_id: uuid.UUID | None) -> uuid.UUID:
+    """
+    Ensure the parent chat row exists and is durably committed BEFORE any
+    dataset insert. Uses an autonomous AUTOCOMMIT connection (separate from
+    the request session) so the row is visible across the engine's pool by
+    the time we return — eliminating the FK race against datasets_chat_id_fkey.
+    """
     target_chat_id = chat_id or uuid.uuid4()
-    db.execute(
-        text(
-            """
-            INSERT INTO chats (chat_id, user_id, name)
-            VALUES (:chat_id, :user_id, :name)
-            ON CONFLICT (chat_id) DO NOTHING
-            """
-        ),
-        {"chat_id": target_chat_id, "user_id": TEST_USER, "name": "Chat"},
-    )
-    db.commit()
-    existing = db.query(Chat).filter(Chat.chat_id == target_chat_id).first()
-    if not existing:
+    engine = db.get_bind()
+    # Make sure the request session has no pending transaction holding locks
+    # against the chats row we're about to insert.
+    db.rollback()
+    with engine.connect() as conn:
+        conn = conn.execution_options(isolation_level="AUTOCOMMIT")
+        conn.execute(
+            text(
+                """
+                INSERT INTO chats (chat_id, user_id, name)
+                VALUES (:chat_id, :user_id, :name)
+                ON CONFLICT (chat_id) DO NOTHING
+                """
+            ),
+            {"chat_id": target_chat_id, "user_id": TEST_USER, "name": "Chat"},
+        )
+        row = conn.execute(
+            text("SELECT chat_id FROM chats WHERE chat_id = :chat_id"),
+            {"chat_id": target_chat_id},
+        ).first()
+    if not row:
         raise RuntimeError(f"Failed to create chat {target_chat_id}")
+    # Expire the session so subsequent queries see the freshly-committed row.
+    db.expire_all()
     return target_chat_id
 
 

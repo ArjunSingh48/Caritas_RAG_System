@@ -49,8 +49,12 @@ services:
       GENERATE_COLUMN_DESCRIPTION: "False"
     ports:
       - "8000:8000"
+    # Mount the source so code edits apply instantly without rebuilding the image.
+    # Combined with --reload below, you only need `docker compose up -d` once.
     volumes:
+      - ./backend:/app
       - uploads_data:/data/uploads
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
 volumes:
   db_data:
