@@ -23,8 +23,8 @@ def test_funding_gap_question_uses_structured_sql():
     assert plan is not None
     assert "GROUP BY p.region" in plan.sql
     assert "b.fiscal_year = 2024" in plan.sql
-    assert "Total project costs" in plan.sql
-    assert "Total income" in plan.sql
+    assert "'Total project costs', 'Indirect Costs'" in plan.sql
+    assert "'Total income', 'Co-financing'" in plan.sql
 
 
 def test_successful_grants_question_uses_structured_sql():
