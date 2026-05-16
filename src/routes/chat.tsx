@@ -248,10 +248,22 @@ function ChatPage() {
           hasChart = true;
         }
 
+        // Wrap the (often terse) backend answer with a short NLP intro so the
+        // user gets a written explanation in addition to the bare value.
+        const rowsCount = resRows.length;
+        const previewCols = resRows[0] ? Object.keys(resRows[0]).slice(0, 3).join(", ") : "";
+        const intro =
+          rowsCount === 0
+            ? `I ran your question — *"${text}"* — against the uploaded data but got no matching rows. Try loosening filters or check the column names.`
+            : rowsCount === 1
+              ? `Here's what I found for *"${text}"*. The result is a single value${previewCols ? ` (${previewCols})` : ""}:`
+              : `Here's what I found for *"${text}"*. The query returned **${rowsCount} row(s)**${previewCols ? ` across columns: _${previewCols}${Object.keys(resRows[0]).length > 3 ? ", …" : ""}_` : ""}. Key takeaway:`;
+        const richAnswer = `${intro}\n\n${res.answer}\n\n_Open the **Table** or **Visual** view below for the full breakdown, or click **Show Dashboard** to see every chart generated so far._`;
+
         appendMessage(chatId, {
           id: aiId,
           role: "ai",
-          content: res.answer,
+          content: richAnswer,
           hasChart,
           query: text,
           dashboardId,
@@ -332,9 +344,26 @@ function ChatPage() {
     if (parsedAll.length) handleSend("", parsedAll);
   };
 
-  // Default dataset for AI message context (latest in chat)
+  // Default dataset for AI message context (latest in chat) — used only as a
+  // fallback when a message has no inline query result of its own.
   const latestDataset: ChatDataset | null =
     activeChat?.datasets[activeChat.datasets.length - 1] ?? null;
+
+  // Build a per-message dataset from the inline result rows so each AI message
+  // shows ITS OWN table/chart instead of the most recent one.
+  const datasetForMessage = (msg: typeof messages[number]): ChatDataset | null => {
+    if (msg.role !== "ai") return null;
+    const rows = msg.resultRows ?? [];
+    const cols = msg.resultColumns ?? (rows[0] ? Object.keys(rows[0]) : []);
+    if (!rows.length || !cols.length) return latestDataset;
+    return {
+      id: `msgds-${msg.id}`,
+      name: msg.query?.slice(0, 40) || "Query result",
+      rows: rows.length,
+      columns: cols.map((c) => ({ name: c, type: inferColType(rows.map((r) => r[c])) })),
+      data: rows,
+    };
+  };
 
   const isInitial = messages.length === 0;
   const datasetsInChat = activeChat?.datasets ?? [];
@@ -458,7 +487,7 @@ function ChatPage() {
                             contentParams={msg.contentParams}
                             hasChart={msg.hasChart}
                             query={msg.query}
-                            dataset={msg.role === "ai" ? latestDataset : undefined}
+                            dataset={msg.role === "ai" ? datasetForMessage(msg) : undefined}
                             onShowDashboard={() => {
                               const dashId =
                                 msg.dashboardId ??

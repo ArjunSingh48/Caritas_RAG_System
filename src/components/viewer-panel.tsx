@@ -238,9 +238,21 @@ function DashboardView({
   chat: ChatRecord;
 }) {
   const { t } = useTranslation();
-  const visuals = dashboard.visualIds
-    .map((vid) => chat.visuals.find((v) => v.id === vid))
-    .filter((v): v is ChatVisual => !!v);
+  // Show ALL visuals generated in this chat so the dashboard accumulates every
+  // chart, not just the single visual attached to one message.
+  const dashboardVisualIds = new Set(dashboard.visualIds);
+  const ordered: ChatVisual[] = [
+    ...chat.visuals.filter((v) => dashboardVisualIds.has(v.id)),
+    ...chat.visuals.filter((v) => !dashboardVisualIds.has(v.id)),
+  ];
+  // De-duplicate by datasetId + spec signature to avoid showing the same chart twice.
+  const seen = new Set<string>();
+  const visuals = ordered.filter((v) => {
+    const key = `${v.datasetId}|${v.spec.kind}|${"x" in v.spec ? v.spec.x : ""}|${v.spec.y}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 
   return (
     <div className="space-y-4 overflow-y-auto p-4">
@@ -257,23 +269,28 @@ function DashboardView({
         ))}
       </div>
 
-      {/* Chat-specific visuals if any */}
-      {visuals.length > 0 && (
+      {/* Every visual generated in this chat */}
+      {visuals.length > 0 ? (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {visuals.map((v) => {
             const ds = chat.datasets.find((d) => d.id === v.datasetId);
             if (!ds) return null;
-            return <InlineChart key={v.id} dataset={ds} spec={v.spec} height={240} />;
+            return (
+              <div key={v.id} className="rounded-md border border-border bg-card p-2">
+                <p className="mb-1 truncate px-1 text-xs text-muted-foreground" title={v.query}>
+                  {v.query || v.name}
+                </p>
+                <InlineChart dataset={ds} spec={v.spec} height={240} />
+              </div>
+            );
           })}
         </div>
-      )}
-
-      {/* Rich default dashboard charts */}
-      <ChartGrid />
-
-      {visuals.length === 0 && (
+      ) : (
         <p className="text-xs text-muted-foreground">{t("viewer.noVisuals")}</p>
       )}
+
+      {/* Rich default dashboard charts as additional reference */}
+      <ChartGrid />
     </div>
   );
 }

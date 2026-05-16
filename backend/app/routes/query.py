@@ -8,6 +8,7 @@ from app.db.session import get_db
 from app.db.schema import Chat, Dataset
 from app.routes.schema import QueryRequest, QueryResponse
 from app.services.llm_service import generate_answer, generate_sql
+from app.services.query_planner import is_analytic_sheet, maybe_plan_structured_query
 
 router = APIRouter(prefix="/query", tags=["query"])
 
@@ -36,6 +37,9 @@ def _load_datasets(
     if not datasets:
         raise HTTPException(status_code=404, detail="No datasets available to query.")
 
+    analytic_datasets = [d for d in datasets if is_analytic_sheet(d.sheet_name)]
+    datasets = analytic_datasets or datasets
+
     return [
         {
             "table_name": d.table_name,
@@ -58,10 +62,15 @@ def query_dataset(body: QueryRequest, db: Session = Depends(get_db)):
 
     tables = _load_datasets(db, user_id=body.user_id, chat_id=body.chat_id, dataset_ids=body.dataset_ids)
 
-    try:
-        sql, display_sql = generate_sql(tables, body.question)
-    except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"SQL generation failed: {exc}")
+    plan = maybe_plan_structured_query(tables, body.question)
+
+    if plan is not None:
+        sql, display_sql = plan.sql, plan.display_sql
+    else:
+        try:
+            sql, display_sql = generate_sql(tables, body.question)
+        except Exception as exc:
+            raise HTTPException(status_code=502, detail=f"SQL generation failed: {exc}")
 
     try:
         result = db.execute(text(sql))
@@ -74,7 +83,10 @@ def query_dataset(body: QueryRequest, db: Session = Depends(get_db)):
         )
 
     try:
-        answer = generate_answer(body.question, sql, rows)
+        if plan is not None and plan.answer_builder is not None:
+            answer = plan.answer_builder(rows)
+        else:
+            answer = generate_answer(body.question, sql, rows)
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"Answer generation failed: {exc}")
 

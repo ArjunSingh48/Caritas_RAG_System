@@ -110,9 +110,48 @@ export function listChats(email: string): ChatRecord[] {
   }
 }
 
+// Strip heavy fields (uploaded sheet rows, query result rows) before writing to
+// localStorage. The backend retains the full data via dataset remoteId, so we
+// only need lightweight metadata in the browser. Without this, a single xlsx
+// upload can exceed the ~5 MB localStorage quota and throw QuotaExceededError.
+const MAX_PERSISTED_RESULT_ROWS = 20;
+
+function slimForStorage(chats: ChatRecord[]): ChatRecord[] {
+  return chats.map((c) => ({
+    ...c,
+    datasets: c.datasets.map((d) => ({
+      ...d,
+      data: undefined,
+      sheets: undefined,
+    })),
+    messages: c.messages.map((m) => ({
+      ...m,
+      resultRows: m.resultRows
+        ? m.resultRows.slice(0, MAX_PERSISTED_RESULT_ROWS)
+        : undefined,
+    })),
+  }));
+}
+
 export function saveChats(email: string, chats: ChatRecord[]) {
   if (typeof window === "undefined" || !email) return;
-  localStorage.setItem(keyFor(email), JSON.stringify(sortByRecent(chats)));
+  const key = keyFor(email);
+  const slim = sortByRecent(slimForStorage(chats));
+  try {
+    localStorage.setItem(key, JSON.stringify(slim));
+  } catch (err) {
+    // QuotaExceededError or similar — drop result rows entirely and retry once.
+    const minimal = slim.map((c) => ({
+      ...c,
+      messages: c.messages.map((m) => ({ ...m, resultRows: undefined })),
+    }));
+    try {
+      localStorage.setItem(key, JSON.stringify(minimal));
+    } catch (err2) {
+      // Give up silently rather than crash the app; chats this session still work in memory.
+      console.warn("Failed to persist chats to localStorage:", err2);
+    }
+  }
 }
 
 export function newChatId(): string {

@@ -6,7 +6,7 @@ import sqlglot
 import sqlglot.expressions as exp
 from app.core.config import settings
 
-MAX_SQL_RETRIES = 3
+MAX_SQL_RETRIES = 2
 FUZZY_THRESHOLD = 0.7
 TEMPERATURE = 0
 
@@ -108,6 +108,13 @@ def _ollama_generate(model: str, prompt: str) -> str:
     return resp.json()["response"].strip()
 
 
+def _clean_sql_output(raw: str) -> str:
+    cleaned = re.sub(r"```(?:sql)?|```", "", raw, flags=re.IGNORECASE).strip()
+    cleaned = re.sub(r"^SQL\s*:\s*", "", cleaned, flags=re.IGNORECASE).strip()
+    cleaned = cleaned.split(";", 1)[0].strip()
+    return cleaned + ";"
+
+
 def _build_alias_map(tables: list[dict]) -> dict[str, str]:
     """Build a mapping of readable_alias -> real_table_name."""
     alias_map: dict[str, str] = {}
@@ -172,6 +179,8 @@ def generate_sql(tables: list[dict], question: str) -> tuple[str, str]:
     - Only include tables whose columns are actually needed. If one table is sufficient, use only that table.
     - Use JOINs when the question requires columns from multiple tables. Join on columns marked as primary key — a primary key in one table is the foreign key in another.
     - When a question asks for a name or label that lives in a different table than the filter/amount column, you MUST JOIN to retrieve it.
+    - Return a single valid PostgreSQL SELECT statement only. Do not prefix it with 'SQL:'.
+    - For funding gap calculations, use Total project costs minus Total income unless the question explicitly asks for another definition.
     - Return ONLY the raw SQL SELECT query - no explanation, no markdown, no code fences.
     SQL:"""
 
@@ -184,7 +193,7 @@ def generate_sql(tables: list[dict], question: str) -> tuple[str, str]:
             if error_context else ""
         )
         raw = _ollama_generate(settings.SQL_MODEL, prompt + retry_note)
-        aliased_sql = re.sub(r"```(?:sql)?|```", "", raw).strip()
+        aliased_sql = _clean_sql_output(raw)
 
         validation_errors = _validate_sql(aliased_sql, alias_map, tables)
         if not validation_errors:
@@ -220,7 +229,8 @@ def generate_answer(question: str, sql: str, rows: list[dict]) -> str:
         count = len(rows)
         return f"Query returned {count} row(s). Results: {sample}"
 
-    prompt = f"""You are a data analyst. A user asked: "{question}"
+    prompt = f"""You are a senior data analyst writing for a non-technical NGO programme manager.
+    A user asked: "{question}"
 
     SQL executed:
     {sql}
@@ -228,7 +238,11 @@ def generate_answer(question: str, sql: str, rows: list[dict]) -> str:
     Result (up to 5 rows):
     {sample}
 
-    Write a concise natural language answer based on the data above.
+    Write a 2 to 4 sentence natural-language answer that:
+    - Restates the question in plain English.
+    - States the concrete numbers / categories from the result (cite them).
+    - Adds one sentence of interpretation (what it means, any caveats, what stands out).
+    Do NOT just dump the JSON. Do NOT say "the table shows".
     Respond in this exact format:
     ANSWER: <your answer>"""
 

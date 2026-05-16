@@ -81,11 +81,46 @@ def _sheet_table_name(dataset_id: str, sheet_name: str) -> str:
     return f"ds_{dataset_id.replace('-', '')}_{safe_sheet}"
 
 
+def _is_junk_sheet(df: pd.DataFrame) -> bool:
+    """Skip sheets that look like free-form README/cover pages: no real
+    header row (all columns are 'Unnamed: N'), empty, or basically no data.
+    These produce un-queryable tables and break SQL generation because the
+    column names contain ':' and spaces."""
+    if df.empty or len(df.columns) == 0:
+        return True
+    unnamed = sum(1 for c in df.columns if str(c).startswith("Unnamed:"))
+    if unnamed == len(df.columns):
+        return True
+    non_empty_header_count = sum(1 for c in df.columns if str(c).strip() and not str(c).startswith("Unnamed:"))
+    if non_empty_header_count <= 2 and len(df.columns) <= 3:
+        text_cells = df.astype(str).replace("nan", "").apply(
+            lambda col: col.str.contains(r"purpose|sheet|recommended as the rag metadata index|mock dataset", case=False, regex=True, na=False)
+        )
+        if text_cells.any().any():
+            return True
+    # Mostly-empty sheet (>90% nulls) → likely not a real data table
+    if df.size and df.isna().sum().sum() / df.size > 0.9:
+        return True
+    return False
+
+
 def _load_excel_sheets(file_path: Path) -> dict[str, pd.DataFrame]:
     xls = pd.ExcelFile(file_path)
     sheets = {}
     for sheet_name in xls.sheet_names:
-        sheets[sheet_name] = xls.parse(sheet_name)
+        if sheet_name.strip().lower() in {"readme", "metadata"}:
+            continue
+        df = xls.parse(sheet_name)
+        if _is_junk_sheet(df):
+            continue
+        # Sanitize column names so SQL identifiers are always valid.
+        df.columns = [
+            "".join(ch if (ch.isalnum() or ch == "_") else "_" for ch in str(c)).strip("_") or f"col_{i}"
+            for i, c in enumerate(df.columns)
+        ]
+        sheets[sheet_name] = df
+    if not sheets:
+        raise HTTPException(status_code=400, detail="No usable data sheets found in workbook.")
     return sheets
 
 
