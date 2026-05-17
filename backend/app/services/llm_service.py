@@ -166,22 +166,36 @@ def generate_sql(tables: list[dict], question: str) -> tuple[str, str]:
 
     tables_section = "\n\n".join(table_blocks)
 
-    prompt = f"""You are an expert SQL assistant working with a PostgreSQL database.
+    prompt = f"""You are an expert PostgreSQL analyst. Produce ONE correct SELECT statement.
 
     Available tables:
     {tables_section}
 
     User question: "{question}"
 
-    Rules:
-    - Each column belongs ONLY to the table it is listed under. Never reference a column in a table that does not contain it.
-    - Use ONLY the exact table and column names listed above. Do not invent or modify them.
-    - Only include tables whose columns are actually needed. If one table is sufficient, use only that table.
-    - Use JOINs when the question requires columns from multiple tables. Join on columns marked as primary key — a primary key in one table is the foreign key in another.
-    - When a question asks for a name or label that lives in a different table than the filter/amount column, you MUST JOIN to retrieve it.
-    - Return a single valid PostgreSQL SELECT statement only. Do not prefix it with 'SQL:'.
-    - For funding gap calculations, use Total project costs minus Total income unless the question explicitly asks for another definition.
-    - Return ONLY the raw SQL SELECT query - no explanation, no markdown, no code fences.
+    HARD RULES (violating any of these makes the answer wrong):
+    - Use ONLY the exact table and column names listed above. Each column belongs ONLY to the table it is listed under. Never invent, alias, or modify names.
+    - Use JOINs (on primary-key / foreign-key columns) whenever the question references attributes (name, region, country, donor type, theme, status, …) that live in a different table from the numeric column you aggregate.
+    - Only include tables whose columns you actually use.
+    - Return a single valid PostgreSQL SELECT statement. No prefix, no markdown, no code fences, no explanation.
+
+    AGGREGATION RULES (critical for correctness):
+    - When the question asks for an "average per <entity>" (e.g. average project size per region, average grant per donor), you MUST first aggregate to the entity level in a CTE / subquery, THEN average across that entity. NEVER apply AVG() directly to raw rows — that averages line items instead of entities and produces wrong numbers.
+      Example pattern for "average project size by region":
+        WITH per_project AS (
+          SELECT p.project_id, p.region,
+                 SUM(CASE WHEN b.budget_line = 'Total project costs' THEN COALESCE(b.amount_chf, 0) ELSE 0 END) AS project_total_costs
+          FROM projects p JOIN budget_actuals b ON b.project_id = p.project_id
+          GROUP BY p.project_id, p.region
+        )
+        SELECT region, AVG(project_total_costs) AS avg_project_size, COUNT(*) AS project_count
+        FROM per_project GROUP BY region ORDER BY avg_project_size DESC;
+    - Always use COALESCE(col, 0) inside SUM/AVG over numeric columns that may be NULL.
+    - When filtering by a categorical value (budget_line, sub_category, grant_status, theme, funding_type, region), use the EXACT string from the schema sample values. Quote string literals with single quotes.
+    - For funding gap: Funding Gap = SUM(amount_chf WHERE budget_line IN ('Total project costs','Indirect Costs')) - SUM(amount_chf WHERE budget_line IN ('Total income','Co-financing')). Use this exact definition unless the question overrides it.
+    - Do NOT trust counts the user mentions in the question (e.g. "the 7 regions", "the 5 themes"). Compute against the actual data; the user may be wrong.
+    - Always ORDER BY the primary metric so the top result is unambiguous, and include a COUNT(*) column when grouping so the answer layer can sanity-check group counts.
+
     SQL:"""
 
     error_context = ""
@@ -223,11 +237,11 @@ def generate_sql(tables: list[dict], question: str) -> tuple[str, str]:
 def generate_answer(question: str, sql: str, rows: list[dict]) -> str:
     """Call Ollama to produce a natural language answer from the query results.
     Falls back to a plain data dump if ANSWER_MODEL is not configured."""
-    sample = json.dumps(rows[:5], default=str)
+    total_rows = len(rows)
+    sample = json.dumps(rows[:10], default=str)
 
     if not settings.ANSWER_MODEL:
-        count = len(rows)
-        return f"Query returned {count} row(s). Results: {sample}"
+        return f"Query returned {total_rows} row(s). Results: {sample}"
 
     prompt = f"""You are a senior data analyst writing for a non-technical NGO programme manager.
     A user asked: "{question}"
@@ -235,14 +249,22 @@ def generate_answer(question: str, sql: str, rows: list[dict]) -> str:
     SQL executed:
     {sql}
 
-    Result (up to 5 rows):
+    Result: {total_rows} total row(s). First {min(total_rows, 10)} shown below as JSON:
     {sample}
 
-    Write a 2 to 4 sentence natural-language answer that:
-    - Restates the question in plain English.
-    - States the concrete numbers / categories from the result (cite them).
-    - Adds one sentence of interpretation (what it means, any caveats, what stands out).
-    Do NOT just dump the JSON. Do NOT say "the table shows".
+    HARD RULES — violating any of these makes the answer wrong:
+    - Use ONLY numbers and labels that appear verbatim in the JSON above. Do NOT invent, round aggressively, or extrapolate values.
+    - If the user's question states a count or category that contradicts the data (e.g. "the 7 regions" but the result has 8 rows), use the data's actual count and gently note the discrepancy.
+    - Before naming a "highest" / "lowest" / "top" item, scan ALL provided rows and pick the actual extremum by the relevant numeric column. Do NOT just pick the first row. Double-check your superlative claim is internally consistent with the numbers you cite.
+    - Cite values exactly as they appear (same units, same magnitude). If a column is in CHF, say "CHF".
+    - If the result is empty, say so plainly. Do not invent rows.
+
+    Write a 2 to 4 sentence answer that:
+    - Restates the question in plain English, using the actual count from the data.
+    - States 2–3 concrete numbers from the result, with the correct ranking.
+    - Adds one sentence of interpretation grounded in the cited numbers.
+
+    Do NOT dump JSON. Do NOT say "the table shows".
     Respond in this exact format:
     ANSWER: <your answer>"""
 
