@@ -160,14 +160,14 @@ def _funding_gap_expr(b: str) -> str:
 
 def _funding_gap_per_region(projects: dict, budget: dict, year: int | None) -> StructuredQueryPlan:
     p, b = projects["table_name"], budget["table_name"]
-    filters = [f"{b}.budget_line IN ('Total project costs', 'Indirect Costs', 'Total income', 'Co-financing')"]
+    filters = ["b.budget_line IN ('Total project costs', 'Indirect Costs', 'Total income', 'Co-financing')"]
     if year is not None:
-        filters.append(f"{b}.fiscal_year = {year}")
+        filters.append(f"b.fiscal_year = {year}")
     where_sql = " AND ".join(filters)
     sql = f"""
 SELECT p.region,
-       SUM(CASE WHEN b.budget_line IN ('Total project costs', 'Indirect Costs') THEN COALESCE(b.amount_chf, 0) ELSE 0 END),
-       SUM(CASE WHEN b.budget_line IN ('Total income', 'Co-financing') THEN COALESCE(b.amount_chf, 0) ELSE 0 END),
+       SUM(CASE WHEN b.budget_line IN ('Total project costs', 'Indirect Costs') THEN COALESCE(b.amount_chf, 0) ELSE 0 END),
+       SUM(CASE WHEN b.budget_line IN ('Total income', 'Co-financing') THEN COALESCE(b.amount_chf, 0) ELSE 0 END),
        {_funding_gap_expr('b')} AS funding_gap
 FROM {p} p
 JOIN {b} b ON b.project_id = p.project_id
@@ -313,12 +313,12 @@ def _lead_partner_highest_gap_ratio(projects: dict, budget: dict) -> StructuredQ
     p, b = projects["table_name"], budget["table_name"]
     sql = f"""
 SELECT p.lead_partner,
-       SUM(CASE WHEN b.budget_line IN ('Total project costs', 'Indirect Costs') THEN COALESCE(b.amount_chf, 0) ELSE 0 END),
-       SUM(CASE WHEN b.budget_line IN ('Total income', 'Co-financing') THEN COALESCE(b.amount_chf, 0) ELSE 0 END),
+       SUM(CASE WHEN b.budget_line IN ('Total project costs', 'Indirect Costs') THEN COALESCE(b.amount_chf, 0) ELSE 0 END),
+       SUM(CASE WHEN b.budget_line IN ('Total income', 'Co-financing') THEN COALESCE(b.amount_chf, 0) ELSE 0 END),
        {_funding_gap_expr('b')} AS funding_gap,
        CASE
          WHEN SUM(CASE WHEN b.budget_line IN ('Total project costs', 'Indirect Costs') THEN COALESCE(b.amount_chf, 0) ELSE 0 END) = 0 THEN NULL
-         ELSE {_funding_gap_expr('b')} * 100.0
+         ELSE ({_funding_gap_expr('b')}) * 100.0
            / SUM(CASE WHEN b.budget_line IN ('Total project costs', 'Indirect Costs') THEN COALESCE(b.amount_chf, 0) ELSE 0 END)
        END AS funding_gap_ratio_pct
 FROM {p} p
@@ -592,7 +592,7 @@ def _cofinancing_vs_direct_income_share(projects: dict, budget: dict) -> Structu
 WITH totals AS (
   SELECT
     SUM(CASE WHEN b.budget_line = 'Co-financing' THEN COALESCE(b.amount_chf, 0) ELSE 0 END) AS co_financing,
-    SUM(CASE WHEN b.budget_line IN ('Total income', 'Co-financing') THEN COALESCE(b.amount_chf, 0) ELSE 0 END)
+    SUM(CASE WHEN b.budget_line IN ('Total income', 'Co-financing') THEN COALESCE(b.amount_chf, 0) ELSE 0 END) AS total_income
   FROM {b} b
 )
 SELECT co_financing,

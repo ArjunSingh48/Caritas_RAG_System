@@ -140,6 +140,18 @@ def _col_def(col: str, info: dict) -> str:
     return " - ".join(parts)
 
 
+def _detect_funding_gap_schema(tables: list[dict]) -> bool:
+    """True only when at least one table looks like the IC budget_actuals
+    fact table. Used to decide whether to inject the funding-gap formula
+    into the prompt — for arbitrary datasets we don't want to bias the LLM
+    with a domain-specific calculation that isn't applicable."""
+    for t in tables:
+        cols = {c.lower() for c in (t.get("schema") or {}).keys()}
+        if {"budget_line", "amount_chf"}.issubset(cols):
+            return True
+    return False
+
+
 def generate_sql(tables: list[dict], question: str) -> tuple[str, str]:
     """
     Generate a SQL SELECT query using readable aliases, then substitute back to
@@ -166,6 +178,16 @@ def generate_sql(tables: list[dict], question: str) -> tuple[str, str]:
 
     tables_section = "\n\n".join(table_blocks)
 
+    # Domain-specific rule only when the schema clearly matches.
+    domain_rule = ""
+    if _detect_funding_gap_schema(tables):
+        domain_rule = (
+            "\n    - For funding gap on this dataset: Funding Gap = "
+            "SUM(amount_chf WHERE budget_line IN ('Total project costs','Indirect Costs')) "
+            "- SUM(amount_chf WHERE budget_line IN ('Total income','Co-financing')). "
+            "Use this exact definition unless the question overrides it."
+        )
+
     prompt = f"""You are an expert PostgreSQL analyst. Produce ONE correct SELECT statement.
 
     Available tables:
@@ -175,26 +197,16 @@ def generate_sql(tables: list[dict], question: str) -> tuple[str, str]:
 
     HARD RULES (violating any of these makes the answer wrong):
     - Use ONLY the exact table and column names listed above. Each column belongs ONLY to the table it is listed under. Never invent, alias, or modify names.
-    - Use JOINs (on primary-key / foreign-key columns) whenever the question references attributes (name, region, country, donor type, theme, status, …) that live in a different table from the numeric column you aggregate.
+    - Use JOINs (on primary-key / foreign-key columns) whenever the question references attributes (name, region, country, type, status, …) that live in a different table from the numeric column you aggregate.
     - Only include tables whose columns you actually use.
     - Return a single valid PostgreSQL SELECT statement. No prefix, no markdown, no code fences, no explanation.
 
     AGGREGATION RULES (critical for correctness):
-    - When the question asks for an "average per <entity>" (e.g. average project size per region, average grant per donor), you MUST first aggregate to the entity level in a CTE / subquery, THEN average across that entity. NEVER apply AVG() directly to raw rows — that averages line items instead of entities and produces wrong numbers.
-      Example pattern for "average project size by region":
-        WITH per_project AS (
-          SELECT p.project_id, p.region,
-                 SUM(CASE WHEN b.budget_line = 'Total project costs' THEN COALESCE(b.amount_chf, 0) ELSE 0 END) AS project_total_costs
-          FROM projects p JOIN budget_actuals b ON b.project_id = p.project_id
-          GROUP BY p.project_id, p.region
-        )
-        SELECT region, AVG(project_total_costs) AS avg_project_size, COUNT(*) AS project_count
-        FROM per_project GROUP BY region ORDER BY avg_project_size DESC;
+    - When the question asks for an "average per <entity>" (e.g. average size per group), you MUST first aggregate to the entity level in a CTE / subquery, THEN average across that entity. NEVER apply AVG() directly to raw rows — that averages line items instead of entities and produces wrong numbers.
     - Always use COALESCE(col, 0) inside SUM/AVG over numeric columns that may be NULL.
-    - When filtering by a categorical value (budget_line, sub_category, grant_status, theme, funding_type, region), use the EXACT string from the schema sample values. Quote string literals with single quotes.
-    - For funding gap: Funding Gap = SUM(amount_chf WHERE budget_line IN ('Total project costs','Indirect Costs')) - SUM(amount_chf WHERE budget_line IN ('Total income','Co-financing')). Use this exact definition unless the question overrides it.
+    - When filtering by a categorical value, use the EXACT string from the schema sample values. Quote string literals with single quotes.
     - Do NOT trust counts the user mentions in the question (e.g. "the 7 regions", "the 5 themes"). Compute against the actual data; the user may be wrong.
-    - Always ORDER BY the primary metric so the top result is unambiguous, and include a COUNT(*) column when grouping so the answer layer can sanity-check group counts.
+    - Always ORDER BY the primary metric so the top result is unambiguous, and include a COUNT(*) column when grouping so the answer layer can sanity-check group counts.{domain_rule}
 
     SQL:"""
 

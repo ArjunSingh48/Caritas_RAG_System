@@ -8,6 +8,7 @@ from app.db.session import get_db
 from app.db.schema import Chat, Dataset
 from app.routes.schema import QueryRequest, QueryResponse
 from app.services.llm_service import generate_answer, generate_sql
+from app.services.query_guard import classify_question
 from app.services.query_planner import is_analytic_sheet, maybe_plan_structured_query
 
 router = APIRouter(prefix="/query", tags=["query"])
@@ -61,6 +62,16 @@ def query_dataset(body: QueryRequest, db: Session = Depends(get_db)):
         )
 
     tables = _load_datasets(db, user_id=body.user_id, chat_id=body.chat_id, dataset_ids=body.dataset_ids)
+
+    # Cheap gate: refuse / clarify before doing expensive SQL or LLM work.
+    guard = classify_question(tables, body.question)
+    if not guard.is_answerable():
+        return QueryResponse(
+            question=body.question,
+            answer=guard.message,
+            sql=None,
+            rows=[],
+        )
 
     plan = maybe_plan_structured_query(tables, body.question)
 
