@@ -47,3 +47,46 @@ def test_staff_vs_partner_question_uses_structured_sql():
     assert "Staff Costs" in plan.sql
     assert "Partner Costs" in plan.sql
     assert "GROUP BY p.region" in plan.sql
+
+
+def test_average_project_size_compare_question_uses_structured_sql():
+    plan = maybe_plan_structured_query(
+        TABLES,
+        "Compare average project size (total costs) across the 7 regions.",
+    )
+    assert plan is not None
+    assert "WITH per_project AS" in plan.sql
+    assert "GROUP BY p.project_id, p.region" in plan.sql
+    assert "AVG(project_total_costs)" in plan.sql
+    assert "COUNT(*) AS project_count" in plan.sql
+
+
+def test_table_roles_can_be_inferred_from_schema_when_sheet_names_vary():
+    tables = [
+        {
+            "table_name": "ds_projects_uuid",
+            "sheet_name": "Projects Export",
+            "schema": {
+                "project_id": {},
+                "project_name": {},
+                "region": {},
+            },
+        },
+        {
+            "table_name": "ds_budget_uuid",
+            "sheet_name": "Budget Actuals Export",
+            "schema": {
+                "project_id": {},
+                "budget_line": {},
+                "amount_chf": {},
+            },
+        },
+    ]
+
+    plan = maybe_plan_structured_query(
+        tables,
+        "Compare average project size (total costs) across the 7 regions.",
+    )
+    assert plan is not None
+    assert "ds_projects_uuid" in plan.sql
+    assert "ds_budget_uuid" in plan.sql

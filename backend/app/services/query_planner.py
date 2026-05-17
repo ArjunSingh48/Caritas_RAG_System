@@ -43,7 +43,11 @@ def maybe_plan_structured_query(
     if projects and budget and ("co-financing" in q or "co financing" in q) and ("direct donor" in q or "direct" in q) and ("share" in q or "vs" in q):
         return _cofinancing_vs_direct_income_share(projects, budget)
 
-    if projects and budget and ("average project size" in q or ("average" in q and "project" in q and "region" in q)):
+    if projects and budget and (
+        "average project size" in q
+        or (("average" in q or "avg" in q or "compare" in q) and "project size" in q and "region" in q)
+        or (("average" in q or "avg" in q or "compare" in q) and "total costs" in q and "project" in q and "region" in q)
+    ):
         return _average_project_size_by_region(projects, budget)
 
     if projects and grants and "donor type" in q and "country" in q and "successful grant" in q:
@@ -93,8 +97,26 @@ def _table_roles(tables: list[dict]) -> dict[str, dict]:
     roles: dict[str, dict] = {}
     for table in tables:
         sheet = (table.get("sheet_name") or "").strip().lower()
-        if sheet in {"projects", "budget_actuals", "grant_applications", "metadata", "readme"}:
-            roles[sheet] = table
+        normalized_sheet = re.sub(r"[^a-z0-9]+", "_", sheet).strip("_")
+        schema_cols = {
+            re.sub(r"[^a-z0-9]+", "_", str(col).strip().lower()).strip("_")
+            for col in (table.get("schema") or {}).keys()
+        }
+
+        if normalized_sheet in {"projects", "project"} or {
+            "project_id", "project_name", "region"
+        }.issubset(schema_cols):
+            roles["projects"] = table
+        elif normalized_sheet in {"budget_actuals", "budget_actual", "budget"} or {
+            "project_id", "budget_line", "amount_chf"
+        }.issubset(schema_cols):
+            roles["budget_actuals"] = table
+        elif normalized_sheet in {"grant_applications", "grant_application", "grants"} or {
+            "project_id", "grant_status", "donor_type"
+        }.issubset(schema_cols):
+            roles["grant_applications"] = table
+        elif normalized_sheet in {"metadata", "readme"}:
+            roles[normalized_sheet] = table
     return roles
 
 
