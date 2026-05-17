@@ -362,7 +362,7 @@ SELECT b.sub_category,
        SUM(COALESCE(b.amount_chf, 0)) AS total_income
 FROM {p} p
 JOIN {b} b ON b.project_id = p.project_id
-WHERE p.project_name ILIKE '%Sahel%'
+WHERE p.region = 'Sahel'
   AND b.budget_line = 'Total income'
   AND b.fiscal_year = {year}
 GROUP BY b.sub_category
