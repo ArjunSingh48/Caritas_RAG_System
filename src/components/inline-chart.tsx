@@ -40,19 +40,70 @@ function toNumber(v: unknown): number {
   return isNaN(n) ? 0 : n;
 }
 
+function isNumericLike(v: unknown): boolean {
+  if (v === null || v === undefined || v === "") return false;
+  const n = Number(v);
+  return !isNaN(n) && isFinite(n);
+}
+
+function sortRows<T extends { name: string }>(
+  rows: T[],
+  xIsNumeric: boolean,
+): T[] {
+  if (xIsNumeric) {
+    return [...rows].sort((a, b) => Number(a.name) - Number(b.name));
+  }
+  // Try date sort
+  const looksDate = rows.every((r) => !isNaN(Date.parse(r.name)));
+  if (looksDate) {
+    return [...rows].sort(
+      (a, b) => Date.parse(a.name) - Date.parse(b.name),
+    );
+  }
+  return rows;
+}
+
+/**
+ * Aggregate rows by X across one or more numeric Y series. If every X value
+ * appears only once we skip summing (preserves precomputed values like
+ * cumulative totals). Returns rows shaped { name, <y1>, <y2>, ... } plus the
+ * actual series keys used (so the chart can render multiple lines/bars).
+ */
+function aggregateMulti(
+  data: Record<string, unknown>[],
+  x: string,
+  ys: string[],
+): { rows: { name: string; [k: string]: number | string }[]; series: string[] } {
+  if (!ys.length) return { rows: [], series: [] };
+  const seen = new Map<string, Record<string, number>>();
+  const order: string[] = [];
+  let hasDupes = false;
+  for (const r of data) {
+    const key = String(r[x] ?? "—");
+    if (!seen.has(key)) {
+      seen.set(key, Object.fromEntries(ys.map((y) => [y, 0])));
+      order.push(key);
+    } else {
+      hasDupes = true;
+    }
+    const bucket = seen.get(key)!;
+    for (const y of ys) bucket[y] += toNumber(r[y]);
+  }
+  // If no duplicates, the bucket values already equal the original values.
+  // (When there are duplicates we sum — that's the correct behaviour.)
+  void hasDupes;
+  const xIsNumeric = order.every(isNumericLike);
+  const rows = order.map((name) => ({ name, ...seen.get(name)! }));
+  return { rows: sortRows(rows, xIsNumeric).slice(0, 60), series: ys };
+}
+
 function aggregateBy(
   data: Record<string, unknown>[],
   x: string,
-  y: string
+  y: string,
 ): { name: string; value: number }[] {
-  const map = new Map<string, number>();
-  for (const r of data) {
-    const key = String(r[x] ?? "—");
-    map.set(key, (map.get(key) ?? 0) + toNumber(r[y]));
-  }
-  return Array.from(map.entries())
-    .map(([name, value]) => ({ name, value }))
-    .slice(0, 30);
+  const { rows } = aggregateMulti(data, x, [y]);
+  return rows.map((r) => ({ name: r.name, value: r[y] as number }));
 }
 
 function histogram(
@@ -80,16 +131,36 @@ export function InlineChart({ dataset, spec, height = 260 }: InlineChartProps) {
   const data = dataset.data ?? [];
   const { kind, x, y, title } = spec;
 
+  // For line/bar charts, plot ALL numeric columns (other than X) as series so
+  // users see e.g. funding_gap AND cumulative_funding_gap together.
+  const numericSeries = (dataset.columns ?? [])
+    .filter((c) => c.type === "number" && c.name !== x)
+    .map((c) => c.name);
+  const seriesKeys = numericSeries.length ? numericSeries : [y];
+  // Ensure the primary y (mentioned in the question) is first.
+  const orderedSeries = [y, ...seriesKeys.filter((k) => k !== y)];
+
   const renderChart = () => {
     if (kind === "line") {
-      const agg = aggregateBy(data, x, y);
+      const { rows, series } = aggregateMulti(data, x, orderedSeries);
       return (
-        <LineChart data={agg}>
+        <LineChart data={rows}>
           <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
           <XAxis dataKey="name" tick={{ fontSize: 11, fill: AXIS }} />
           <YAxis tick={{ fontSize: 11, fill: AXIS }} />
           <Tooltip />
-          <Line type="monotone" dataKey="value" stroke={PRIMARY} strokeWidth={2} dot={{ r: 3 }} />
+          {series.length > 1 && <Legend wrapperStyle={{ fontSize: 11 }} />}
+          {series.map((s, i) => (
+            <Line
+              key={s}
+              type="monotone"
+              dataKey={s}
+              name={s}
+              stroke={COLORS[i % COLORS.length]}
+              strokeWidth={2}
+              dot={{ r: 3 }}
+            />
+          ))}
         </LineChart>
       );
     }
@@ -145,14 +216,24 @@ export function InlineChart({ dataset, spec, height = 260 }: InlineChartProps) {
         </BarChart>
       );
     }
-    const agg = aggregateBy(data, x, y);
+    // Default: grouped bar with every numeric series.
+    const { rows, series } = aggregateMulti(data, x, orderedSeries);
     return (
-      <BarChart data={agg}>
+      <BarChart data={rows}>
         <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
         <XAxis dataKey="name" tick={{ fontSize: 11, fill: AXIS }} />
         <YAxis tick={{ fontSize: 11, fill: AXIS }} />
         <Tooltip />
-        <Bar dataKey="value" fill={PRIMARY} radius={[4, 4, 0, 0]} />
+        {series.length > 1 && <Legend wrapperStyle={{ fontSize: 11 }} />}
+        {series.map((s, i) => (
+          <Bar
+            key={s}
+            dataKey={s}
+            name={s}
+            fill={COLORS[i % COLORS.length]}
+            radius={[4, 4, 0, 0]}
+          />
+        ))}
       </BarChart>
     );
   };
