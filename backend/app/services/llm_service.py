@@ -11,6 +11,53 @@ FUZZY_THRESHOLD = 0.7
 TEMPERATURE = 0
 
 
+def _collect_derived_scopes(parsed) -> tuple[set[str], set[str], set[str]]:
+    """Return (cte_or_subquery_names, projected_column_names, table_aliases).
+    These should be treated as valid in addition to base-table columns."""
+    derived_names: set[str] = set()
+    projected_cols: set[str] = set()
+    table_aliases: set[str] = set()
+
+    # CTEs from WITH clauses
+    for cte in parsed.find_all(exp.CTE):
+        alias = cte.alias_or_name
+        if alias:
+            derived_names.add(alias)
+        # Projected columns of the CTE's SELECT
+        select = cte.this
+        if isinstance(select, exp.Select):
+            for proj in select.expressions:
+                name = proj.alias_or_name
+                if name:
+                    projected_cols.add(name)
+
+    # Subqueries used as tables: (SELECT ...) AS x
+    for sub in parsed.find_all(exp.Subquery):
+        alias = sub.alias_or_name
+        if alias:
+            derived_names.add(alias)
+            inner = sub.this
+            if isinstance(inner, exp.Select):
+                for proj in inner.expressions:
+                    name = proj.alias_or_name
+                    if name:
+                        projected_cols.add(name)
+
+    # Table aliases (e.g. FROM foo f) — both alias and real name are valid refs
+    for tbl in parsed.find_all(exp.Table):
+        if tbl.alias:
+            table_aliases.add(tbl.alias)
+
+    # SELECT-level column aliases (used by ORDER BY / outer refs)
+    for select in parsed.find_all(exp.Select):
+        for proj in select.expressions:
+            name = proj.alias_or_name
+            if name:
+                projected_cols.add(name)
+
+    return derived_names, projected_cols, table_aliases
+
+
 def _validate_sql(sql: str, alias_map: dict, tables: list[dict]) -> list[str]:
     """ Parse the generated SQL and check every table alias and column against the known schema. Returns a list of error strings. """
     real_to_alias = {v: k for k, v in alias_map.items()}
@@ -22,25 +69,29 @@ def _validate_sql(sql: str, alias_map: dict, tables: list[dict]) -> list[str]:
     except Exception as e:
         return [f"SQL parse error: {e}"]
 
+    derived_names, projected_cols, table_aliases = _collect_derived_scopes(parsed)
+    valid_table_refs = set(alias_to_cols) | derived_names | table_aliases
+
     errors: list[str] = []
 
     for tbl in parsed.find_all(exp.Table):
-        if tbl.name and tbl.name not in alias_to_cols:
+        if tbl.name and tbl.name not in valid_table_refs:
             errors.append(
                 f"Table '{tbl.name}' does not exist. Available tables: {list(alias_to_cols)}"
             )
 
+    all_cols = set().union(*alias_to_cols.values()) | projected_cols
     for col in parsed.find_all(exp.Column):
         col_name = col.name
         tbl_ref = col.table
         if tbl_ref:
+            # If qualified by a CTE/subquery/table alias we don't track columns for, skip.
             if tbl_ref in alias_to_cols and col_name not in alias_to_cols[tbl_ref]:
                 errors.append(
                     f"Column '{col_name}' does not exist in table '{tbl_ref}'. "
                     f"Available: {sorted(alias_to_cols[tbl_ref])}"
                 )
         else:
-            all_cols = set().union(*alias_to_cols.values())
             if col_name not in all_cols:
                 errors.append(
                     f"Column '{col_name}' does not exist in any table."
@@ -62,11 +113,15 @@ def _fuzzy_fix_sql(sql: str, alias_map: dict, tables: list[dict]) -> tuple[str, 
     except Exception:
         return sql, []
 
+    derived_names, projected_cols, table_aliases = _collect_derived_scopes(parsed)
+    valid_table_refs = set(alias_to_cols) | derived_names | table_aliases
+    extended_cols = set(all_cols) | projected_cols
+
     replacements: dict[str, str] = {}
 
     for tbl in parsed.find_all(exp.Table):
         name = tbl.name
-        if name and name not in alias_to_cols:
+        if name and name not in valid_table_refs:
             matches = difflib.get_close_matches(name, all_aliases, n=1, cutoff=FUZZY_THRESHOLD)
             if matches:
                 replacements[name] = matches[0]
@@ -81,7 +136,7 @@ def _fuzzy_fix_sql(sql: str, alias_map: dict, tables: list[dict]) -> tuple[str, 
                 )
                 if matches:
                     replacements[col_name] = matches[0]
-        elif not tbl_ref and col_name not in all_cols:
+        elif not tbl_ref and col_name not in extended_cols:
             matches = difflib.get_close_matches(col_name, all_cols, n=1, cutoff=FUZZY_THRESHOLD)
             if matches:
                 replacements[col_name] = matches[0]
