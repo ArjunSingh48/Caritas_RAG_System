@@ -58,6 +58,16 @@ def _collect_derived_scopes(parsed) -> tuple[set[str], set[str], set[str]]:
     return derived_names, projected_cols, table_aliases
 
 
+def _build_sql_alias_map(parsed, alias_to_cols: dict) -> dict:
+    """Map SQL-level aliases (FROM foo AS T1) to the readable table alias.
+    Only includes aliases whose underlying table we know columns for."""
+    sql_alias_to_table: dict = {}
+    for tbl in parsed.find_all(exp.Table):
+        if tbl.alias and tbl.name in alias_to_cols:
+            sql_alias_to_table[tbl.alias] = tbl.name
+    return sql_alias_to_table
+
+
 def _validate_sql(sql: str, alias_map: dict, tables: list[dict]) -> list[str]:
     """ Parse the generated SQL and check every table alias and column against the known schema. Returns a list of error strings. """
     real_to_alias = {v: k for k, v in alias_map.items()}
@@ -71,6 +81,7 @@ def _validate_sql(sql: str, alias_map: dict, tables: list[dict]) -> list[str]:
 
     derived_names, projected_cols, table_aliases = _collect_derived_scopes(parsed)
     valid_table_refs = set(alias_to_cols) | derived_names | table_aliases
+    sql_alias_to_table = _build_sql_alias_map(parsed, alias_to_cols)
 
     errors: list[str] = []
 
@@ -84,13 +95,15 @@ def _validate_sql(sql: str, alias_map: dict, tables: list[dict]) -> list[str]:
     for col in parsed.find_all(exp.Column):
         col_name = col.name
         tbl_ref = col.table
-        if tbl_ref:
-            # If qualified by a CTE/subquery/table alias we don't track columns for, skip.
-            if tbl_ref in alias_to_cols and col_name not in alias_to_cols[tbl_ref]:
+        # Resolve a SQL alias (e.g. T1) back to its underlying readable table alias.
+        resolved = sql_alias_to_table.get(tbl_ref, tbl_ref) if tbl_ref else None
+        if resolved:
+            if resolved in alias_to_cols and col_name not in alias_to_cols[resolved]:
                 errors.append(
-                    f"Column '{col_name}' does not exist in table '{tbl_ref}'. "
-                    f"Available: {sorted(alias_to_cols[tbl_ref])}"
+                    f"Column '{col_name}' does not exist in table '{resolved}'. "
+                    f"Available: {sorted(alias_to_cols[resolved])}"
                 )
+            # If resolved isn't in alias_to_cols (CTE/subquery), skip.
         else:
             if col_name not in all_cols:
                 errors.append(
@@ -116,6 +129,7 @@ def _fuzzy_fix_sql(sql: str, alias_map: dict, tables: list[dict]) -> tuple[str, 
     derived_names, projected_cols, table_aliases = _collect_derived_scopes(parsed)
     valid_table_refs = set(alias_to_cols) | derived_names | table_aliases
     extended_cols = set(all_cols) | projected_cols
+    sql_alias_to_table = _build_sql_alias_map(parsed, alias_to_cols)
 
     replacements: dict[str, str] = {}
 
@@ -129,10 +143,11 @@ def _fuzzy_fix_sql(sql: str, alias_map: dict, tables: list[dict]) -> tuple[str, 
     for col in parsed.find_all(exp.Column):
         col_name = col.name
         tbl_ref = col.table
-        if tbl_ref and tbl_ref in alias_to_cols:
-            if col_name not in alias_to_cols[tbl_ref]:
+        resolved = sql_alias_to_table.get(tbl_ref, tbl_ref) if tbl_ref else None
+        if resolved and resolved in alias_to_cols:
+            if col_name not in alias_to_cols[resolved]:
                 matches = difflib.get_close_matches(
-                    col_name, list(alias_to_cols[tbl_ref]), n=1, cutoff=FUZZY_THRESHOLD
+                    col_name, list(alias_to_cols[resolved]), n=1, cutoff=FUZZY_THRESHOLD
                 )
                 if matches:
                     replacements[col_name] = matches[0]

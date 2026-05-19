@@ -83,15 +83,35 @@ def query_dataset(body: QueryRequest, db: Session = Depends(get_db)):
         except Exception as exc:
             raise HTTPException(status_code=502, detail=f"SQL generation failed: {exc}")
 
-    try:
-        result = db.execute(text(sql))
+    def _run(sql_to_run: str):
+        result = db.execute(text(sql_to_run))
         columns = list(result.keys())
-        rows = [dict(zip(columns, row)) for row in result.fetchall()]
+        return columns, [dict(zip(columns, row)) for row in result.fetchall()]
+
+    try:
+        _, rows = _run(sql)
     except Exception as exc:
-        raise HTTPException(
-            status_code=422,
-            detail=f"Generated SQL could not be executed: {exc}\n\nSQL was: {sql}",
-        )
+        # If a planner produced the SQL we can't retry meaningfully — surface it.
+        # Otherwise give the LLM one more shot with the DB error as feedback.
+        if plan is not None:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Generated SQL could not be executed: {exc}\n\nSQL was: {sql}",
+            )
+        db.rollback()
+        try:
+            retry_question = (
+                f"{body.question}\n\n"
+                f"(Your previous SQL failed with this Postgres error — fix it and try again: {exc})"
+            )
+            sql, display_sql = generate_sql(tables, retry_question)
+            _, rows = _run(sql)
+        except Exception as exc2:
+            db.rollback()
+            raise HTTPException(
+                status_code=422,
+                detail=f"Generated SQL could not be executed after retry: {exc2}\n\nSQL was: {sql}",
+            )
 
     try:
         if plan is not None and plan.answer_builder is not None:
