@@ -38,6 +38,7 @@ export interface ChatDataset {
   activeSheetName?: string;
   // Backend dataset_id when uploaded to FastAPI; absent when running mock-only.
   remoteId?: string;
+  remoteIds?: string[];
   tableDescription?: string;
 }
 

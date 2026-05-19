@@ -33,6 +33,22 @@ function isCategoryColumn(c: ParsedColumn): boolean {
   return (c.type === "string" || CATEGORY_NAME.test(c.name)) && !isIdColumn(c);
 }
 
+function scoreNumericColumn(queryLower: string, name: string): number {
+  const normalized = name.toLowerCase().replace(/_/g, " ");
+  let score = 0;
+  if (queryLower.includes(normalized) || queryLower.includes(name.toLowerCase())) score += 12;
+  if (/funding gap/.test(queryLower) && /funding[_\s-]?gap/.test(normalized)) score += 10;
+  if (/(share|percentage|percent|breakdown|split|proportion)/.test(queryLower) && /(share|percent|pct)/.test(normalized)) score += 10;
+  if (/(rate|success rate)/.test(queryLower) && /(rate|pct|percent)/.test(normalized)) score += 10;
+  if (/ratio/.test(queryLower) && /(ratio|pct|percent)/.test(normalized)) score += 10;
+  if (/cumulative/.test(queryLower) && /cumulative/.test(normalized)) score += 10;
+  if (/average|avg/.test(queryLower) && /avg|average/.test(normalized)) score += 8;
+  if (/income/.test(queryLower) && /income/.test(normalized)) score += 6;
+  if (/cost/.test(queryLower) && /cost/.test(normalized)) score += 6;
+  if (/approved/.test(queryLower) && /approved/.test(normalized)) score += 6;
+  return score;
+}
+
 export function pickGraph(query: string, columns: ParsedColumn[]): GraphSpec {
   if (!columns.length) {
     return { kind: "bar", x: "name", y: "value", title: query.slice(0, 60) || "Result" };
@@ -41,12 +57,16 @@ export function pickGraph(query: string, columns: ParsedColumn[]): GraphSpec {
   // Decide kind from intent first; default depends on whether we have a time column.
   const hasTimeCol = columns.some(isTimeColumn);
   const hasCatCol = columns.some(isCategoryColumn);
+  const numericColCount = columns.filter((c) => c.type === "number" && !isIdColumn(c)).length;
   let kind: GraphKind = hasTimeCol ? "line" : "bar";
   if (TIME.test(query)) kind = "line";
   else if (SHARE.test(query) && hasCatCol) kind = "pie"; // pie only makes sense with a category split
-  else if (RELATION.test(query)) kind = "scatter";
-  else if (DIST.test(query)) kind = "histogram";
   else if (COMPARE.test(query)) kind = hasTimeCol && !hasCatCol ? "line" : "bar";
+  else if (DIST.test(query)) kind = "histogram";
+  // Scatter only when there is no category axis AND we have 2+ numeric columns.
+  // Otherwise a bare "vs" in the query (e.g. "Staff Costs vs Partner Costs by region")
+  // should stay a grouped bar chart, not a scatter plot.
+  else if (RELATION.test(query) && !hasCatCol && numericColCount >= 2) kind = "scatter";
 
   // Pick X: prefer a time column for line charts, otherwise a category column,
   // otherwise the first non-ID column.
@@ -67,13 +87,13 @@ export function pickGraph(query: string, columns: ParsedColumn[]): GraphSpec {
     (c) => c.type === "number" && c.name !== xName && !isIdColumn(c),
   );
   const queryLower = query.toLowerCase();
-  const mentioned = numericCandidates.find((c) =>
-    queryLower.includes(c.name.toLowerCase().replace(/_/g, " ")) ||
-    queryLower.includes(c.name.toLowerCase())
+  const rankedNumeric = [...numericCandidates].sort(
+    (a, b) => scoreNumericColumn(queryLower, b.name) - scoreNumericColumn(queryLower, a.name),
   );
+  const mentioned = rankedNumeric.find((c) => scoreNumericColumn(queryLower, c.name) > 0);
   const yCol =
     mentioned?.name ??
-    numericCandidates[0]?.name ??
+    rankedNumeric[0]?.name ??
     columns.find((c) => c.name !== xName && !isIdColumn(c))?.name ??
     columns[0].name;
 

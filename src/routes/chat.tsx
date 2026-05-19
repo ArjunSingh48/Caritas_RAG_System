@@ -111,6 +111,77 @@ function ChatPage() {
     return "string";
   };
 
+  const isNumericLike = (value: unknown) => {
+    if (value === null || value === undefined || value === "") return false;
+    return Number.isFinite(Number(value));
+  };
+
+  const toMetricLabel = (key: string) =>
+    key
+      .replace(/_pct$/i, " %")
+      .replace(/_chf$/i, " CHF")
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+
+  const buildChartDatasetFromResult = (name: string, rows: Record<string, unknown>[]): ChatDataset | null => {
+    if (!rows.length) return null;
+
+    if (rows.length === 1) {
+      const row = rows[0];
+      const shareEntries = Object.entries(row).filter(
+        ([key, value]) => /share|ratio|pct|percent/i.test(key) && isNumericLike(value),
+      );
+      if (shareEntries.length >= 2) {
+        const data = shareEntries.map(([metric, value]) => ({
+          metric: toMetricLabel(metric),
+          value: Number(value),
+        }));
+        return {
+          id: `qchart-${Date.now()}`,
+          name,
+          rows: data.length,
+          columns: [
+            { name: "metric", type: "string" as const },
+            { name: "value", type: "number" as const },
+          ],
+          data,
+        };
+      }
+    }
+
+    const cols = Object.keys(rows[0]);
+    return {
+      id: `qres-${Date.now()}`,
+      name,
+      rows: rows.length,
+      columns: cols.map((c) => ({
+        name: c,
+        type: inferColType(rows.map((r) => r[c])),
+      })),
+      data: rows,
+    };
+  };
+
+  const shouldCreateVisualForQuestion = (question: string, dataset: ChatDataset | null) => {
+    if (!dataset?.columns?.length) return false;
+    const numericCols = dataset.columns.filter((c) => c.type === "number");
+    if (!numericCols.length) return false;
+    if (/(which projects|active projects|past end date|data quality check)/i.test(question)) {
+      return false;
+    }
+    // Single-row result with only one meaningful numeric column → one bar isn't a chart.
+    // The accompanying text answer already conveys the value.
+    if (dataset.rows === 1 && numericCols.length < 2) return false;
+    // Single-record "winner" style questions (top X / which Y is highest) are best as text.
+    if (
+      dataset.rows === 1 &&
+      /(which (lead partner|donor|region|country|project)|highest|top \d+|most)/i.test(question)
+    ) {
+      return false;
+    }
+    return true;
+  };
+
   const handleSend = async (text: string, parsed?: ParsedFile[]) => {
     const wantsDashboard = DASHBOARD_INTENT.test(text);
     const chatId = activeChatId ?? newChat();
@@ -158,6 +229,7 @@ function ChatPage() {
           sheets: p.sheets,
           activeSheetName: p.sheets[0]?.name,
           remoteId,
+          remoteIds: newRemoteIds.length ? [...newRemoteIds] : remoteId ? [remoteId] : undefined,
           tableDescription,
         };
         addDataset(chatId, ds);
@@ -184,7 +256,7 @@ function ChatPage() {
         const chatNow =
           activeChat ?? null;
         const remoteIds = [
-          ...(chatNow?.datasets.map((d) => d.remoteId).filter(Boolean) ?? []),
+          ...(chatNow?.datasets.flatMap((d) => d.remoteIds ?? (d.remoteId ? [d.remoteId] : [])).filter(Boolean) ?? []),
           ...newRemoteIds,
         ] as string[];
         if (!remoteIds.length) {
@@ -201,17 +273,12 @@ function ChatPage() {
         const resRows = Array.isArray(res.rows) ? res.rows : [];
         let resultDataset: ChatDataset | null = null;
         if (resRows.length) {
-          const cols = Object.keys(resRows[0]);
-          resultDataset = {
-            id: `qres-${aiId}`,
-            name: text.slice(0, 40) || "Query result",
-            rows: resRows.length,
-            columns: cols.map((c) => ({
-              name: c,
-              type: inferColType(resRows.map((r) => r[c])),
-            })),
-            data: resRows,
-          };
+          resultDataset = buildChartDatasetFromResult(
+            text.slice(0, 40) || "Query result",
+            resRows,
+          );
+        }
+        if (resultDataset) {
           addDataset(chatId, resultDataset);
         }
 
@@ -223,7 +290,7 @@ function ChatPage() {
 
         let dashboardId: string | undefined;
         let hasChart = false;
-        if (chartDs && chartDs.columns?.length) {
+        if (chartDs?.columns?.length && shouldCreateVisualForQuestion(text, chartDs)) {
           const spec = pickGraph(text, chartDs.columns);
           const visual: ChatVisual = {
             id: `v-${aiId}`,
