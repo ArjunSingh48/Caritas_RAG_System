@@ -131,14 +131,26 @@ export function InlineChart({ dataset, spec, height = 260 }: InlineChartProps) {
   const data = dataset.data ?? [];
   const { kind, x, y, title } = spec;
 
-  // For line/bar charts, plot ALL numeric columns (other than X) as series so
-  // users see e.g. funding_gap AND cumulative_funding_gap together.
-  const numericSeries = (dataset.columns ?? [])
-    .filter((c) => c.type === "number" && c.name !== x)
+  // Respect the Y column chosen by pickGraph. Only add a second series when
+  // it is clearly a related variant of the same metric (e.g. `funding_gap`
+  // and `cumulative_funding_gap`) — never dump every numeric column, which
+  // mixes unrelated scales and makes the chart misleading.
+  const normalize = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/^(cumulative|cum|total|running|ytd|avg|average|mean|sum)[_\s-]*/, "")
+      .replace(/[_\s-]+/g, "");
+  const yKey = normalize(y);
+  const relatedSeries = (dataset.columns ?? [])
+    .filter(
+      (c) =>
+        c.type === "number" &&
+        c.name !== x &&
+        c.name !== y &&
+        normalize(c.name) === yKey,
+    )
     .map((c) => c.name);
-  const seriesKeys = numericSeries.length ? numericSeries : [y];
-  // Ensure the primary y (mentioned in the question) is first.
-  const orderedSeries = [y, ...seriesKeys.filter((k) => k !== y)];
+  const orderedSeries = [y, ...relatedSeries];
 
   const renderChart = () => {
     if (kind === "line") {
