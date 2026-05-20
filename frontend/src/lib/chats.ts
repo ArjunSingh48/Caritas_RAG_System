@@ -1,0 +1,121 @@
+// Per-user chat persistence (frontend only, localStorage).
+
+import type { GraphSpec } from "@/lib/graph-pick";
+
+export interface ChatMessage {
+  id: string;
+  role: "user" | "ai";
+  // Raw text content (for user messages and legacy AI messages).
+  content: string;
+  // Optional translation key for AI mock messages so they re-translate when
+  // the user switches language. When present, ChatMessage renders t(contentKey).
+  contentKey?: string;
+  contentParams?: Record<string, unknown>;
+  hasChart?: boolean;
+  query?: string;
+  files?: { name: string; size: number }[];
+  dashboardId?: string;
+}
+
+export interface ChatDatasetColumn {
+  name: string;
+  type: "number" | "date" | "string";
+}
+
+export interface ChatDataset {
+  id: string;
+  name: string;
+  size?: number;
+  rows?: number;
+  columns?: ChatDatasetColumn[];
+  data?: Record<string, unknown>[];
+}
+
+export interface ChatVisual {
+  id: string;
+  name: string;
+  datasetId: string;
+  query: string;
+  spec: GraphSpec;
+  createdAt: number;
+}
+
+export interface ChatDashboard {
+  id: string;
+  name: string;
+  visualIds: string[];
+  summary?: string;
+}
+
+export interface ChatRecord {
+  id: string;
+  title: string;
+  messages: ChatMessage[];
+  datasets: ChatDataset[];
+  visuals: ChatVisual[];
+  dashboards: ChatDashboard[];
+  createdAt: number;
+  updatedAt: number;
+}
+
+const keyFor = (email: string) => `chats_${email.toLowerCase()}`;
+
+function sortByRecent(chats: ChatRecord[]): ChatRecord[] {
+  return [...chats].sort((a, b) => b.updatedAt - a.updatedAt);
+}
+
+function migrate(chat: Partial<ChatRecord>): ChatRecord {
+  return {
+    id: chat.id ?? `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    // Legacy chats may store an English "New Chat" — strip it so UI shows translated fallback.
+    title: chat.title === "New Chat" ? "" : chat.title ?? "",
+    messages: chat.messages ?? [],
+    datasets: chat.datasets ?? [],
+    visuals: chat.visuals ?? [],
+    dashboards: (chat.dashboards ?? []).map((d) => ({
+      id: d.id,
+      name: d.name,
+      visualIds: (d as ChatDashboard).visualIds ?? [],
+      summary: (d as ChatDashboard).summary,
+    })),
+    createdAt: chat.createdAt ?? Date.now(),
+    updatedAt: chat.updatedAt ?? Date.now(),
+  };
+}
+
+export function listChats(email: string): ChatRecord[] {
+  if (typeof window === "undefined" || !email) return [];
+  try {
+    const raw = localStorage.getItem(keyFor(email));
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as Partial<ChatRecord>[];
+    return sortByRecent(parsed.map(migrate));
+  } catch {
+    return [];
+  }
+}
+
+export function saveChats(email: string, chats: ChatRecord[]) {
+  if (typeof window === "undefined" || !email) return;
+  localStorage.setItem(keyFor(email), JSON.stringify(sortByRecent(chats)));
+}
+
+export function makeNewChat(): ChatRecord {
+  const now = Date.now();
+  return {
+    id: `${now}-${Math.random().toString(36).slice(2, 8)}`,
+    title: "",
+    messages: [],
+    datasets: [],
+    visuals: [],
+    dashboards: [],
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
+export function deriveTitle(text: string): string {
+  const trimmed = text.trim().replace(/\s+/g, " ");
+  if (!trimmed) return "";
+  return trimmed.length > 30 ? trimmed.slice(0, 30) + "…" : trimmed;
+}
